@@ -8,16 +8,21 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(turtlesim REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
 
 
 
-add_executable(robot_square src/robot_square.cpp)
-ament_target_dependencies(robot_square rclcpp  geometry_msgs)
+add_executable(p2_robot_square src/p2_robot_square.cpp)
+ament_target_dependencies(p2_robot_square rclcpp  geometry_msgs)
+
+add_executable(p3_go_to_goal src/p3_go_to_goal.cpp)
+ament_target_dependencies(p3_go_to_goal rclcpp  geometry_msgs nav_msgs tf2_geometry_msgs)
 
 
-install(TARGETS robot_square
+
+install(TARGETS p2_robot_square p3_go_to_goal
   DESTINATION lib/${PROJECT_NAME})
 
 
