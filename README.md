@@ -4,7 +4,10 @@ This repository will be carrying code for basics of mobile robotics with ros2 im
 ## Repository Structure for ROS2 Course
 - **drive_turtle**     : Multi-turtlesim driving with ROS2
     - Learnings : Topics , Nodes , Launch Files , Services
-- **drive_turtlebot3** :
+    - P1 :
+- **drive_turtlebot3** : Turtlebot3 driving with ROS2
+    - Namespaces , Launch arguments , topics remapping
+    - P2 : run p2_b and p2_c_sqaure.launch to move multi turtles in square
 
 
 
