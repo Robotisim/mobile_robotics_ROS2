@@ -38,6 +38,7 @@ def generate_launch_description():
     robot_name = LaunchConfiguration('robot_name', default='waffle_a')
     x_pose = LaunchConfiguration('x_pose', default='0.0')
     y_pose = LaunchConfiguration('y_pose', default='0.0')
+    cc_rot = LaunchConfiguration('cc_rot', default='0.0')
 
     # Declare the launch arguments
     declare_x_position_cmd = DeclareLaunchArgument(
@@ -58,6 +59,7 @@ def generate_launch_description():
             '-x', x_pose,
             '-y', y_pose,
             '-z', '0.01',
+            '-Y', cc_rot,
             '-robot_namespace', robot_ns
         ],
         output='screen',
