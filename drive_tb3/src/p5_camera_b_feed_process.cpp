@@ -21,62 +21,56 @@ public:
 
 private:
     void process_image(cv::Mat &image)
+{
+    // Convert the image to grayscale
+    cv::Mat resized_image;
+    cv::resize(image, resized_image, cv::Size(480, 480));
+
+    cv::Mat gray_image;
+    cv::cvtColor(resized_image, gray_image, cv::COLOR_BGR2GRAY);
+
+    // Apply Gaussian blur to reduce noise
+    cv::Mat blurred_image;
+    cv::GaussianBlur(gray_image, blurred_image, cv::Size(5, 5), 0);
+
+    // Apply the Canny edge detection algorithm
+    cv::Mat edges;
+    cv::Canny(blurred_image, edges, 50, 150); // These thresholds might need to be adjusted
+
+    // Display the Canny edges
+    cv::imshow("edges", edges);
+    cv::waitKey(1);
+
+    // Apply the Hough Line Transform to find the longest straight lines
+    std::vector<cv::Vec2f> lines;
+    cv::HoughLines(edges, lines, 1, CV_PI/180, 150, 0, 0 ); // These parameters might need to be adjusted
+
+    // Draw the longest straight lines
+    for( size_t i = 0; i < lines.size(); i++ )
     {
-        // Threshold the image to isolate the walls
-        cv::Mat binary_image;
-        cv::inRange(image, cv::Scalar(0, 0, 0), cv::Scalar(80, 80, 80), binary_image);
-
-        // Apply Gaussian blur to reduce noise
-        cv::GaussianBlur(binary_image, binary_image, cv::Size(5, 5), 0);
-
-        // Find the contours of the walls
-        std::vector<std::vector<cv::Point>> contours;
-        cv::findContours(binary_image, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
-
-        // Process the contours to find the largest one
-        double max_area = 0;
-        std::vector<cv::Point> largest_contour;
-        for (const auto &contour : contours)
-        {
-            double area = cv::contourArea(contour);
-            if (area > max_area)
-            {
-                max_area = area;
-                largest_contour = contour;
-            }
-        }
-
-        // Draw the largest contour
-        cv::Mat drawing = cv::Mat::zeros(binary_image.size(), CV_8UC3);
-        cv::drawContours(drawing, std::vector<std::vector<cv::Point>>{largest_contour}, 0, cv::Scalar(255, 255, 255), 2);
-
-        // Find the centroid of the largest contour
-        cv::Moments m = cv::moments(largest_contour);
-        int cx = int(m.m10 / m.m00);
-        int cy = int(m.m01 / m.m00);
-
-        // Draw the centroid
-        cv::circle(drawing, cv::Point(cx, cy), 5, cv::Scalar(0, 0, 255), -1);
-
-        // Display the processed image
-        cv::imshow("processed", drawing);
-
-        // Calculate the control command based on the centroid's position
-        float error = float(image.cols / 2 - cx);
-        float Kp = 0.001;
-        float angular_velocity = Kp * error;
-        float linear_velocity = 0.1;
-
-        // Send the control command to the robot
-        auto cmd_vel = geometry_msgs::msg::Twist();
-        cmd_vel.linear.x = linear_velocity;
-        cmd_vel.angular.z = angular_velocity;
-        // pub_->publish(cmd_vel);
+        float rho = lines[i][0], theta = lines[i][1];
+        cv::Point pt1, pt2;
+        double a = cos(theta), b = sin(theta);
+        double x0 = a*rho, y0 = b*rho;
+        pt1.x = cvRound(x0 + 1000*(-b));
+        pt1.y = cvRound(y0 + 1000*(a));
+        pt2.x = cvRound(x0 - 1000*(-b));
+        pt2.y = cvRound(y0 - 1000*(a));
+        cv::line( image, pt1, pt2, cv::Scalar(0,0,255), 3, cv::LINE_AA);
     }
+
+    // Display the image with lines
+
+
+    // Display the image with lines
+    // cv::imshow("lines", resized_image);
+    // cv::waitKey(1);
+}
+
 
     void callback(const sensor_msgs::msg::Image::SharedPtr msg)
     {
-        RCLCPP_INFO(this->get_logger(), "Received image message");
+        // RCLCPP_INFO(this->get_logger(), "Received image message");
 
         // Convert the ROS image into an OpenCV image
         cv_bridge::CvImagePtr cv_ptr;

@@ -9,6 +9,8 @@ This repository will be carrying code for basics of mobile robotics with ros2 im
     - Namespaces , Launch arguments , topics remapping
     - P2 : run p2_b and p2_c_sqaure.launch to move multi turtles in square
     - ros2 topic pub --once /robot_a/cmd_vel geometry_msgs/msg/Twist "{'linear': {'x': 0.5, 'y': 0.0, 'z': 0.0}, 'angular': {'x': 0.0, 'y': 0.0, 'z': 0.1}}"
+    - ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r cmd_vel:=/robot_a/cmd_vel
+ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r cmd_vel:=/robot_a/cmd_vel
 
 
 
