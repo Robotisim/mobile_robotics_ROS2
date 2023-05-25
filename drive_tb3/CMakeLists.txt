@@ -10,58 +10,71 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
-find_package(tf2_geometry_msgs REQUIRED)
+find_package(tf2 REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(OpenCV REQUIRED)
-
-include_directories(include ${OpenCV_INCLUDE_DIRS})
-
-add_executable(p2_robot_square src/p2_robot_square.cpp)
-ament_target_dependencies(p2_robot_square rclcpp  geometry_msgs)
-
-add_executable(p3_go_to_goal src/p3_go_to_goal.cpp)
-ament_target_dependencies(p3_go_to_goal rclcpp  geometry_msgs nav_msgs tf2_geometry_msgs)
-
-add_executable(p5_lidar_a_processing src/p5_lidar_a_processing.cpp)
-ament_target_dependencies(p5_lidar_a_processing rclcpp  geometry_msgs  sensor_msgs)
-
-add_executable(p5_lidar_b_processing src/p5_lidar_b_processing.cpp)
-ament_target_dependencies(p5_lidar_b_processing rclcpp  geometry_msgs  sensor_msgs)
+find_package(gazebo_msgs REQUIRED)
 
 
-add_executable(p5_lidar_c_processing src/p5_lidar_c_processing.cpp)
-ament_target_dependencies(p5_lidar_c_processing rclcpp  geometry_msgs  sensor_msgs)
+add_executable(p2_multi_tb3_sqaure_drive src/p2_multi_tb3_sqaure_drive.cpp)
+ament_target_dependencies(p2_multi_tb3_sqaure_drive rclcpp geometry_msgs)
 
-add_executable(p5_lidar_d_processing src/p5_lidar_d_processing.cpp)
-ament_target_dependencies(p5_lidar_d_processing rclcpp  geometry_msgs  sensor_msgs)
-
-add_executable(p5_camera_a_feed_process src/p5_camera_a_feed_process.cpp)
-ament_target_dependencies(p5_camera_a_feed_process rclcpp sensor_msgs cv_bridge)
-target_link_libraries(p5_camera_a_feed_process ${OpenCV_LIBS})
+add_executable(p3_a_acceleration src/p3_a_acceleration.cpp)
+ament_target_dependencies(p3_a_acceleration rclcpp geometry_msgs)
 
 
-add_executable(p5_camera_b_feed_process src/p5_camera_b_feed_process.cpp)
-ament_target_dependencies(p5_camera_b_feed_process rclcpp sensor_msgs cv_bridge)
-target_link_libraries(p5_camera_b_feed_process ${OpenCV_LIBS})
+add_executable(p3_b_angular_velocity src/p3_b_angular_velocity.cpp)
+ament_target_dependencies(p3_b_angular_velocity rclcpp geometry_msgs)
+
+add_executable(p3_c_linear_goal src/p3_c_linear_goal.cpp)
+ament_target_dependencies(p3_c_linear_goal rclcpp geometry_msgs nav_msgs)
+
+add_executable(p3_d_xy_goal src/p3_d_xy_goal.cpp)
+ament_target_dependencies(p3_d_xy_goal rclcpp geometry_msgs nav_msgs tf2)
+
+add_executable(p5_a_lidar_data_sub src/p5_a_lidar_data_sub.cpp)
+ament_target_dependencies(p5_a_lidar_data_sub rclcpp geometry_msgs sensor_msgs)
+
+add_executable(p5_b_maze_solving src/p5_b_maze_solving.cpp)
+ament_target_dependencies(p5_b_maze_solving rclcpp geometry_msgs sensor_msgs)
+
+add_executable(p5_c_camera_data_sub src/p5_c_camera_data_sub.cpp)
+ament_target_dependencies(p5_c_camera_data_sub rclcpp geometry_msgs sensor_msgs cv_bridge)
+target_link_libraries(p5_c_camera_data_sub ${OpenCV_LIBS})
+
+add_executable(p5_d_line_following src/p5_d_line_following.cpp)
+ament_target_dependencies(p5_d_line_following rclcpp geometry_msgs sensor_msgs cv_bridge)
+target_link_libraries(p5_d_line_following ${OpenCV_LIBS})
+
+add_executable(p6_a_occupancy_grid src/p6_a_occupancy_grid.cpp)
+ament_target_dependencies(p6_a_occupancy_grid rclcpp geometry_msgs  nav_msgs)
+
+add_executable(p6_b_sdf_spawner src/p6_b_sdf_spawner.cpp)
+ament_target_dependencies(p6_b_sdf_spawner rclcpp gazebo_msgs)
 
 
-add_executable(p5_camera_c_feed_process src/p5_camera_c_feed_process.cpp)
-ament_target_dependencies(p5_camera_c_feed_process rclcpp sensor_msgs cv_bridge)
-target_link_libraries(p5_camera_c_feed_process ${OpenCV_LIBS})
+install(TARGETS p2_multi_tb3_sqaure_drive
+                p3_a_acceleration p3_b_angular_velocity p3_c_linear_goal p3_d_xy_goal
+                p5_a_lidar_data_sub p5_b_maze_solving p5_c_camera_data_sub p5_d_line_following
+                p6_a_occupancy_grid p6_b_sdf_spawner
 
-
-
-
-install(TARGETS p2_robot_square p3_go_to_goal
-p5_lidar_a_processing p5_lidar_b_processing p5_lidar_c_processing p5_lidar_d_processing
-p5_camera_a_feed_process p5_camera_b_feed_process p5_camera_c_feed_process
   DESTINATION lib/${PROJECT_NAME})
 
-
-install(DIRECTORY launch world
+install(DIRECTORY launch worlds models map
   DESTINATION share/${PROJECT_NAME}/
 )
 
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  # the following line skips the linter which checks for copyrights
+  # comment the line when a copyright and license is added to all source files
+  set(ament_cmake_copyright_FOUND TRUE)
+  # the following line skips cpplint (only works in a git repo)
+  # comment the line when this package is in a git repo and when
+  # a copyright and license is added to all source files
+  set(ament_cmake_cpplint_FOUND TRUE)
+  ament_lint_auto_find_test_dependencies()
+endif()
 
 ament_package()
