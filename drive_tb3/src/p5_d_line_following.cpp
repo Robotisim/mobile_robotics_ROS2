@@ -63,7 +63,7 @@ private:
         }
         else {
             RCLCPP_INFO(this->get_logger(), "Turn Left");
-            velocity_msg.angular.z=0.;
+            velocity_msg.angular.z=angular_vel;
         }
 
         publisher_->publish(velocity_msg);
@@ -75,6 +75,7 @@ private:
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr subscription_;
     rclcpp::TimerBase::SharedPtr timer_;
+    double angular_vel=0.3;
 };
 
 

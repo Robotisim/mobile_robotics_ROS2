@@ -69,13 +69,6 @@ def generate_launch_description():
 
 
 ############ Rviz Configuration
-    maze_nav=IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([get_package_share_directory('nav2_bringup'),'/launch','/bringup_launch.py']),
-            launch_arguments={
-        'map':map_file,
-        'params_file': params_file}.items(),
-
-    )
 
     rviz = Node(
             package='rviz2',
@@ -93,8 +86,7 @@ def generate_launch_description():
     ld.add_action(robot_spawner)
     ld.add_action(maze_spawner)
     ld.add_action(robot_state_publisher_cmd)
-    # ld.add_action(maze_mapping)
+    ld.add_action(maze_mapping)
     ld.add_action(rviz)
-    ld.add_action(maze_nav)
 
     return ld

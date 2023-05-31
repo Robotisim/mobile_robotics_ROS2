@@ -50,8 +50,8 @@ def generate_launch_description():
 
     follow_line_tb3 = Node(
         package='drive_tb3',
-        executable='p5_c_camera_data_sub',
-        name='Camera_processing'
+        executable='p5_d_line_following',
+        name='Line_following'
         # parameters=[
         #     {'cmd_vel_topic': '/robot_b/cmd_vel'},
         # ]
