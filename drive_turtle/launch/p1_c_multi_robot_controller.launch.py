@@ -7,7 +7,7 @@ def generate_launch_description():
     # Controller for turtle1
     turtle1_controller = Node(
         package='drive_turtle',
-        executable='multi_turtle_controller',
+        executable='p1_multi_turtle_controller',
         name='turtle1_controller',
         parameters=[
             {'cmd_vel_topic': '/turtle1/cmd_vel'},
@@ -18,11 +18,11 @@ def generate_launch_description():
     # Controller for turtle2
     turtle2_controller = Node(
         package='drive_turtle',
-        executable='multi_turtle_controller',
+        executable='p1_multi_turtle_controller',
         name='turtle2_controller',
         parameters=[
             {'cmd_vel_topic': '/turtle2/cmd_vel'},
-            {'linear_velocity': 3.0}
+            {'linear_velocity': 1.5}
         ]
     )
 
