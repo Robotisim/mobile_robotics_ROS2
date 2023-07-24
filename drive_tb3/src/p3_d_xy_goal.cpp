@@ -1,3 +1,10 @@
+/**
+ * @file p3_d_xy_goal.cpp
+ * @author Muhammad Luqman
+ * @brief This ROS2 node calculates the error between the current and goal positions in the x and y directions,
+ * and the error in the yaw angle, and publishes Twist messages to control robot motion accordingly.
+ * @organization Robotisim
+ */
 #include <iostream>
 #include <memory>
 #include <rclcpp/rclcpp.hpp>

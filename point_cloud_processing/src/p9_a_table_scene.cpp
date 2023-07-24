@@ -9,7 +9,7 @@ int main(){
     pcl::PCDReader cloud_reader;
     std::string pcd_file_name = "table_scene.pcd";
 	std::filesystem::path ros2_ws_path    = std::filesystem::current_path();
-    std::filesystem::path point_cloud_dir = ros2_ws_path/"src/point_cloud_processing/point_clouds/";
+    std::filesystem::path point_cloud_dir = ros2_ws_path/"src/point_cloud_processing/point_clouds";
     std::string pcd_file_path             = point_cloud_dir/pcd_file_name;
 
     cloud_reader.read(pcd_file_path,*cloud);

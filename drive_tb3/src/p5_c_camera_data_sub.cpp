@@ -1,3 +1,9 @@
+/**
+ * @file p5_c_camera_data_sub.cpp
+ * @author Muhammad Luqman
+ * @brief This ROS2 node receives Image messages, converts the images to grayscale, and displays the images.
+ * @organization Robotisim
+ */
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/image.hpp"
 #include "geometry_msgs/msg/twist.hpp"

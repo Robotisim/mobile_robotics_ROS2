@@ -1,3 +1,13 @@
+/**
+ * Author: Muhammad Luqman
+ * Organization: Robotisim
+ *
+ * This ROS2 node, "turtlesim_driving", makes a Turtlebot3 robot move in a square pattern.
+ *
+ * The node publishes geometry_msgs/Twist messages to a specified command velocity topic
+ * to control the robot's motion. The robot moves straight for a certain duration, then turns
+ * for a certain duration, and repeats these steps to complete the square pattern.
+ */
 #include <chrono>
 #include <functional>
 #include <memory>
@@ -30,25 +40,26 @@ class drive_turtlesim : public rclcpp::Node
 
     void timer_callback()
     {
-        auto message = geometry_msgs::msg::Twist();
+      auto message = geometry_msgs::msg::Twist();
 
-        double travel_time = side_length / linear_velocity;
-        double turn_time = 2 + (M_PI / (2.0 *angular_velocity) );
-        RCLCPP_INFO(this->get_logger(), "Turn_time: %f, Travel_time: %f, ", turn_time, travel_time);
+      // Calculate travel time and turn time
+      double travel_time = side_length / linear_velocity;
+      double turn_time = 2 + (M_PI / (2.0 * angular_velocity) );
 
-        //  Move robot Straight
-        message.linear.x = linear_velocity;
-        message.angular.z = 0.0;
-        publisher_->publish(message);
-        rclcpp::sleep_for(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::duration<double>(travel_time)));
+      // Create the Twist message
+      auto message = geometry_msgs::msg::Twist();
 
+      // Move robot straight
+      message.linear.x = linear_velocity;
+      message.angular.z = 0.0;
+      publisher_->publish(message);
+      rclcpp::sleep_for(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::duration<double>(travel_time)));
 
-        //  Stop robot and make a turn
-        message.angular.z = angular_velocity;
-        message.linear.x = angular_velocity;
-        publisher_->publish(message);
-        RCLCPP_INFO(this->get_logger(), "Turning");
-        rclcpp::sleep_for(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::duration<double>(turn_time)));
+      // Stop robot and make a turn
+      message.angular.z = angular_velocity;
+      message.linear.x = angular_velocity;
+      publisher_->publish(message);
+      rclcpp::sleep_for(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::duration<double>(turn_time)));
 
     }
     rclcpp::TimerBase::SharedPtr timer_;

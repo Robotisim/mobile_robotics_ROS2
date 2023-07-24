@@ -1,3 +1,9 @@
+/**
+ * @file p6_a_occupancy_grid.cpp
+ * @author Muhammad Luqman
+ * @brief This ROS2 node publishes OccupancyGrid messages at a regular interval.
+ * @organization Robotisim
+ */
 #include <iostream>
 #include <memory>
 #include <rclcpp/rclcpp.hpp>
@@ -21,6 +27,7 @@ public:
 private:
     void OG_callback()
     {
+        // Populate OccupancyGrid message
         auto occupancy_grid_message = nav_msgs::msg::OccupancyGrid();
         occupancy_grid_message.header =std_msgs::msg::Header();
         occupancy_grid_message.header.stamp = this->now();

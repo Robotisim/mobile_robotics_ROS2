@@ -1,3 +1,10 @@
+/**
+ * @file p5_a_lidar_data_sub.cpp
+ * @author Muhammad Luqman
+ * @brief This ROS2 node receives LaserScan messages, calculates the distances to the closest obstacles
+ *  in the front, right, and left directions, and publishes Twist messages to control robot motion.
+ * @organization Robotisim
+ */
 #include <iostream>
 #include <memory>
 #include <rclcpp/rclcpp.hpp>
@@ -19,9 +26,11 @@ public:
 private:
     void lidar_callback(const sensor_msgs::msg::LaserScan::SharedPtr lidar_msg)
     {
+        // Group obstacles
         float right_obstacle = *std::min_element(lidar_msg->ranges.begin() + 260, lidar_msg->ranges.begin() + 280);
         float front_obstacle = *std::min_element(lidar_msg->ranges.begin() + 340, lidar_msg->ranges.begin() + 360);
         float left_obstacle= *std::min_element(lidar_msg->ranges.begin() + 80, lidar_msg->ranges.begin() + 100);
+        // Publish distances to the obstacles
         RCLCPP_INFO(this->get_logger(), "Front: %f, Right: %f, Left: %f,", front_obstacle, right_obstacle, left_obstacle);
 
 

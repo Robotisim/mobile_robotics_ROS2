@@ -1,3 +1,14 @@
+/**
+ * Author: Muhammad Luqman
+ * Organization: Robotisim
+ *
+ * This ROS2 node, "turtlesim_straight_line", publishes geometry_msgs/Twist messages
+ * at a regular interval to make two Turtlebot3 robots move in a straight line.
+ *
+ * This node publishes to the "/robot1/turtle1/cmd_vel" and "/robot2/turtle1/cmd_vel" topics.
+ */
+
+
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 
@@ -16,6 +27,8 @@ class TurtlesimStraightLine : public rclcpp::Node {
     rclcpp::TimerBase::SharedPtr timer_;
 
     void timer_callback() {
+    // Publish the Twist message for both robots to move in a straight line
+
       geometry_msgs::msg::Twist twist;
       twist.linear.x = 2.0;
       twist.angular.z = 0.0;

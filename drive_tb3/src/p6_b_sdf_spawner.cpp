@@ -1,3 +1,9 @@
+/**
+ * @file p6_b_sdf_spawner.cpp
+ * @author Muhammad Luqman
+ * @brief This ROS2 node reads a file into a string and sends a service request to spawn an entity in a simulation.
+ * @organization Robotisim
+ */
 #include "rclcpp/rclcpp.hpp"
 #include "gazebo_msgs/srv/spawn_entity.hpp"
 

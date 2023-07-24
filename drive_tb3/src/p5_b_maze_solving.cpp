@@ -1,3 +1,11 @@
+/**
+ * @file p5_b_maze_solving.cpp
+ * @author Muhammad Luqman
+ * @brief This ROS2 node receives LaserScan messages, determines the robot's state based on the
+ *  distances to the closest obstacles, and publishes Twist messages to control robot motion accordingly.
+ * @organization Robotisim
+ */
+
 #include <iostream>
 #include <memory>
 #include <rclcpp/rclcpp.hpp>
@@ -29,6 +37,7 @@ public:
 private:
     void lidar_callback(const sensor_msgs::msg::LaserScan::SharedPtr lidar_msg)
     {
+        // Determine robot's state and control robot motion accordingly
         float right_obstacle = *std::min_element(lidar_msg->ranges.begin() + 260, lidar_msg->ranges.begin() + 280);
         float front_obstacle = *std::min_element(lidar_msg->ranges.begin() + 340, lidar_msg->ranges.begin() + 360);
         float left_obstacle= *std::min_element(lidar_msg->ranges.begin() + 80, lidar_msg->ranges.begin() + 100);

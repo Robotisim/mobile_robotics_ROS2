@@ -1,3 +1,12 @@
+/**
+ * @file p3_c_linear_goal.cpp
+ * @author Muhammad Luqman
+ * @brief This ROS2 node calculates the error between the current and goal positions in the x-direction
+ * and publishes Twist messages to control robot motion accordingly.
+ * @organization Robotisim
+ */
+
+
 #include <iostream>
 #include <memory>
 #include <rclcpp/rclcpp.hpp>
@@ -23,6 +32,7 @@ private:
         double goal_x = this->get_parameter("goal_x").as_double();
         double current_x = tb3_odom_msg->pose.pose.position.x;
         double Kp = 2.0;
+        // Publish error and control robot motion
         double error = Kp*(goal_x - current_x) ;
 
 

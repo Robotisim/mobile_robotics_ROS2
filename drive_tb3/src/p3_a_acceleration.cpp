@@ -1,3 +1,9 @@
+/**
+ * @file p3_a_acceleration.cpp
+ * @author Muhammad Luqman
+ * @brief This ROS2 node calculates and outputs the acceleration of a robot and publishes Twist messages for robot motion.
+ * @organization Robotisim
+ */
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 
@@ -29,7 +35,7 @@ public:
         // update last velocity and time
         last_velocity_ = current_velocity;
         last_time_ = current_time;
-
+        // Create and publish the Twist message for robot motion
         auto message = geometry_msgs::msg::Twist();
         message.linear.x = current_velocity;
         publisher_->publish(message);

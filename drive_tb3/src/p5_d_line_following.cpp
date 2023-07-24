@@ -1,3 +1,11 @@
+/**
+ * @file p5_d_line_following.cpp
+ * @author Muhammad Luqman
+ * @brief This ROS2 node receives Image messages, applies the Canny edge detection algorithm to the images,
+ * finds the midpoint of the detected line, calculates the error between the midpoint and the center of the image,
+ * and publishes Twist messages to control robot motion.
+ * @organization Robotisim
+ */
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/image.hpp"
 #include "geometry_msgs/msg/twist.hpp"
@@ -36,6 +44,7 @@ private:
         cv::Canny(gray_image,canny_image,lower_threshold,upper_threshold);
 
         int row=150,column=0;
+        // Apply Canny edge detection and find midpoint of the line
         cv::Mat roi = canny_image(cv::Range(row,row+240) , cv::Range(column , column+640));
 
 

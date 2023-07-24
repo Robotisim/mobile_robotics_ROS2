@@ -1,3 +1,11 @@
+/**
+ * @file p3_b_angular_velocity.cpp
+ * @author Muhammad Luqman
+ * @brief This ROS2 node calculates the angular velocity for a robot moving in a circle
+ * of a specified radius and publishes Twist messages for robot motion.
+ * @organization Robotisim
+ */
+
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 
@@ -21,7 +29,7 @@ public:
         double linear_velocity =this->get_parameter("linear_velocity").as_double();
         double radius = this->get_parameter("radius").as_double();
         RCLCPP_INFO(this->get_logger(), "VEL_Linear: %f - Radius: %f", linear_velocity,radius);
-
+        // Calculate angular velocity and create the Twist message
         auto message = geometry_msgs::msg::Twist();
         message.linear.x =linear_velocity;
         message.angular.z = linear_velocity/radius;
