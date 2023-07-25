@@ -40,7 +40,6 @@ class drive_turtlesim : public rclcpp::Node
 
     void timer_callback()
     {
-      auto message = geometry_msgs::msg::Twist();
 
       // Calculate travel time and turn time
       double travel_time = side_length / linear_velocity;

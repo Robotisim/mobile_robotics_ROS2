@@ -22,7 +22,7 @@ def generate_launch_description():
         name='turtle1_controller',
         parameters=[
             {'cmd_vel_topic': '/turtle1/cmd_vel'},
-            {'linear_velocity': 2.0}
+            {'linear_velocity': 2.5}
         ]
     )
 
