@@ -2,8 +2,10 @@
 
 Installations :
 ```
-sudo apt install python3-rosdep
+sudo apt install python3-rosdep2
 sudo apt-get install python3-pip
+pip install esptool
+
 ```
  ### Step#1 ROS 2 Installation (Humble)
 ```
@@ -93,49 +95,30 @@ My results:
 
 [notice] To update, run: pip install --upgrade pip
 
- ## Using Example: INT32 publisher 
 
 ### Step#8 Configuring Micro-ros firmware:
 The configuration step will set up the main micro-ROS firmware, after executing the command it will help us to configure the files for our project.Then enter the project name which will include the code and Device IP address ,it could be either(computer, laptop etc)
 
+#### Through serial port:
+```
+ros2 run micro_ros_setup configure_firmware.sh ping_pong --transport serial
+
+```
 Notes : 
 - The example used here is Int32 Publisher so the PROJECT NAME : int32 Publisher and the specific Ip address.
 
-```
-ros2 run micro_ros_setup configure_firmware.sh [PROJECT NAME] -t udp -i [LOCAL MACHINE IP ADDRESS] -p 8888
-```
-IP address of the devise can be extracted by:
-```
-ifcongig
-```
-Notes :
-- I used the following entries in my command:
-```
-ros2 run micro_ros_setup configure_firmware.sh int32_publisher -t udp -i 192.168.1.88 -p 8888
-```
-
-### Configure Wi-Fi Credentials:
-Set up the Wi-Fi credentials (SSID and password) to connect to your local Wi-Fi network. 
-```
-ros2 run micro_ros_setup build_firmware.sh menuconfig
-```
-Notes :
-- ros2 run micro_ros_setup: This is the ros2 run command to execute a specific package in the ROS 2 ecosystem
-- menuconfig: This argument is passed to the script and specifies the configuration interface.
-
-- Following command gives access to "EspressifIOT Development framework configration" window, configure WiFi settings there by accessing Micro ros transport settings - wifi settings - then change wifi SSID to the one your computer has ,I changed it to "Gigaclear_Zafar" and then insert the password. hit the "S" key to save and then enter and press "Q" to quit the window.
 
 ### Building micro Ros firmware:
 By running build_firmware.sh the firmware is built
 ```
 ros2 run micro_ros_setup build_firmware.sh
-
-pip install esptool
 ```
+
 ### Flashing Micro Ros firmware:
 To flash ESP32 first connect it with the computer through usb and then run this command, and it will start to flash.
-
+```
 ros2 run micro_ros_setup flash_firmware.sh
+```
 
 ### Step#9: Building Micro Ros Agent:
 Notes: 
@@ -145,11 +128,11 @@ Notes:
 -  2.micro-ROS consists of a node running on the microcontroller and an agent running on the host computer. The agent handles the interface between the node and the rest of the ROS2 stack. This allows the ROS2 stack and microcontroller node to publish and subscribe to each other as if the node was like any other ROS2 node.
 
 Following commands will allow to create Ros agent so that the device can start communicating(publish & subscribe) with ros 2 environment.
+### Run Micro ros agent with serial port:
+
 ```
 ros2 run micro_ros_setup create_agent_ws.sh
-ros2 run micro_ros_setup build_agent.sh
-source install/local_setup.sh
-ros2 run micro_ros_agent micro_ros_agent [parameters]
+
 ros2 run micro_ros_setup create_agent_ws.sh
 ```
 ### Building the agent:
@@ -160,65 +143,61 @@ ros2 run micro_ros_setup build_agent.sh
 ```
 source install/local_setup.sh
 ```
-### Run micro ros agent:
-Once ESP32 connected to the Wi-Fi network and the micro-ROS-Agent running with the correct p arameters, the ESP32 should be able to communicate wirelessly with the ROS 2 ecosystem via micro-ROS.
-```
-ros2 run micro_ros_agent micro_ros_agent [parameters]
-```
-I used the command:
-```
-ros2 run micro_ros_agent micro_ros_agent udp4 --port 8888
-```
-The command runs the micro-ROS-Agent with UDP (User Datagram Protocol) transport on port 8888. 
-
-Notes:
-- ros2 run: This is the command used to run a ROS 2 node. It allows you to execute a specified ROS 2 package and node.
-
-- micro_ros_agent: This is the name of the ROS 2 package that contains the micro-ROS-Agent node.
-
-- udp4: This is an argument specifying that the transport protocol to be used is UDPv4. UDP is a lightweight, connectionless protocol often used for real-time communication in embedded systems.
-
-- --port 8888: This argument specifies the port number on which the micro-ROS-Agent will listen for incoming UDP traffic. In this case, it's set to port 8888.
-
-IMPORTANT: When you run this command, the micro-ROS-Agent will start and listen for UDP packets on port 8888. It will act as the intermediary between your embedded system (which should be running a micro-ROS-enabled firmware) and the ROS 2 network. Messages sent from your embedded system will be received by the micro-ROS-Agent and then forwarded to the appropriate ROS 2 nodes. Similarly, messages from ROS 2 nodes will be relayed to your embedded system through the micro-ROS-Agent.
-
-### Results:
-- tried running the publisher wirelessly on esp32 (After pressing the restart button on esp32 it did not work).
-
-- Tried to run the publisher with USB, with the help of following command and it results in success.
 
 ```
 ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyUSB0
 ```
-press the enable button and it will start giving the results:
+Notes:
+
+- Parameters : serial --dev /dev/ttyUSB0
+- press the enable button and it will confirm that the esp32 is comunicating.
 
 ### Step#10 Testing:
-By typing Ros2 topic list
-
-### Results:
-mehtab@mehtab-K55VD:~/microros_ws$ ros2 topic list
-
-*/freertos_int32_publisher*
-
-*/parameter_events*
-
-*/rosout*
-
-*mehtab@mehtab-K55VD:~/microros_ws$ /freertos_int32_publisher*
-
-*/parameter_events*
-
-*/rosout*
-
-**The above results shows that int32 publishers is publishing.**
-
-### Subscribing to micro-ROS topic
+Micro ros is build, flashed and connected with the agent which can be tested with the help of the following commands.
 ```
-ros2 topic echo /freertos_int32_publisher
+source /opt/ros/$ROS_DISTRO/setup.bash
 ```
-results shows that data is being subscribed by the microcontroller.
+### Subscribe to micro-ROS ping topic 
+Running this command will display the messages being published on the /microROS/ping topic as they are received.
+```
+ros2 topic echo /microROS/ping
+```
+Below results shows that topic messages are published every 2 seconds by the ping pong.
 
+stamp:
+  sec: 1054
+  nanosec: 335498000
+frame_id: '151542945_741655773'
+stamp:
+  sec: 1056
+  nanosec: 338789000
+frame_id: '1240087656_741655773'
 
+Notes:
+- Above results shows that Micro ros is publishing pings.Now let's test if it publishes a pong in results of someone else ping.It can be done by subscribing to Ros2 to the pong topic in a new terminal.
+
+```
+source /opt/ros/$ROS_DISTRO/setup.bash
+```
+### Subscribe to micro-ROS pong topic
+```
+ros2 topic echo /microROS/pong
+```
+Publish a fake ping from another terminal.
+```
+source /opt/ros/$ROS_DISTRO/setup.bash
+```
+
+```
+ros2 topic pub --once /microROS/ping std_msgs/msg/Header '{frame_id: "Mehtab_ping"}'
+```
+ Notes:
+ - Results shows Mehtab_ping is displayed in the ping subscriber console along with the other pings, which means that micro-ROS pong publisher answered with a pong when it  recived (Mehtab_ping) as a new ping.
+
+stamp:
+  sec: 0
+  nanosec: 0
+frame_id: Mehtab_ping
 
 
 
