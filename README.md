@@ -103,8 +103,7 @@ The configuration step will set up the main micro-ROS firmware, after executing 
 ros2 run micro_ros_setup configure_firmware.sh ping_pong --transport serial
 
 ```
-Notes : 
-- The example used here is Int32 Publisher so the PROJECT NAME : int32 Publisher and the specific Ip address.
+
 
 
 ### Building micro Ros firmware:
