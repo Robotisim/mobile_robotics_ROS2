@@ -232,6 +232,14 @@ ros2 run micro_ros_setup configure_firmware.sh <project> -t udp -i <IP> -p 8888
 
 - int32_subscriber is the project we are running here.
 
+```
+ros2 run micro_ros_setup build_firmware.sh menuconfig
+```
+
+- Go to micro-Ros Transport Settings.
+- Wifi Congiguration.
+- Write your credentials. 
+
 ### Step # 3 Make Changes to app.c file
 
 ```
