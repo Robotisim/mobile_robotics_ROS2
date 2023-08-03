@@ -211,4 +211,129 @@ stamp:
 frame_id: Mehtab_ping
 
 
+## Wireless communication through UDP
 
+- For this process we will use the ESP32 as the subscriber and our PC as publisher.
+
+### Step # 1 Check you computers IP Address
+
+```
+ifconfig 
+```
+- This will give a complete configuration of network interface. Select the IPv4 address. It will look like 192.xxx.xxx.xxx.
+
+### Step # 2 Configure Firmware
+
+```
+source install/local_setup.bash 
+
+ros2 run micro_ros_setup configure_firmware.sh <project> -t udp -i <IP> -p 8888
+```
+
+- int32_subscriber is the project we are running here.
+
+### Step # 3 Make Changes to app.c file
+
+```
+~/mros_ws/firmware/freertos_apps/apps/int32_subscriber
+```
+- Go to the int32_subscriber project. Open the app.c file and add the following directives and definitions.
+
+```
+#include <unistd.h>
+
+#ifdef ESP_PLATFORM
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#endif
+```
+
+### Step # 4 Building firmware
+
+```
+ros2 run micro_ros_setup build_firmware.sh
+
+source install/local_setup.bash
+```
+
+### Step # 5 Flashing firmware
+
+```
+ros2 run micro_ros_setup flash_firmware.sh
+```
+
+### Step # 6 Building the agent
+
+- Creating agent not required again 
+
+```
+ros2 run micro_ros_setup build_agent.sh
+
+source install/local_setup.sh
+```
+### Step # 7 Run agent
+
+- Go back to the terminal and run the following command.
+
+```
+ros2 run micro_ros_agent micro_ros_agent udp4 --port 8888
+```
+
+- Push the enable button. Connection should start.
+
+### Step # 8 Check topics
+
+- Open a new terminal and run.
+
+```
+ros2 topic list
+```
+
+- int32_subscriber should show up.
+
+
+
+### Step # 9 Link Subscriber(ESP32) & Publisher(PC)
+
+Go to this page https://shorturl.at/crITY
+
+- Complete till step 2.
+- Open publisher_member_function.cpp file.
+- Do the following changes:
+
+
+- #include "std_msgs/msg/int32.hpp" //line 7
+- line 20,28,34 change String to Int32.
+- message.data = count_++;  //line 29 
+- comment out line 30
+
+Make changes to cmake and package.xml files as stated in the link.
+
+- Open a new terminal and open the new workspace created.
+
+```
+colcon build --packages-select cpp_pubsub
+
+source install/local_setup.sh 
+
+ros2 run cpp_pubsub talker
+```
+
+### Step # 10 Check the data recieved by ESP32
+
+- Go to micro ros workspace and run:
+
+```
+ros2 topic echo /microROS/int32_subscriber
+```
+
+
+### IMPORTANT 
+
+- Remember to close udp port once finished.
+
+```
+sudo lsof -i UDP:<port>
+
+sudo kill -9 <PID>
+```
