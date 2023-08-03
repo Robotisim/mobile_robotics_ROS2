@@ -63,6 +63,7 @@ Notes :
 sudo apt update && rosdep update
 rosdep install --from-path src --ignore-src -y
 ```
+
 This command ensures that all the necassary dependiencies are installed in ROS with in the workspace.It runs inside catkin or colcon workspace to resolve and install dependencies for the packages located in the "src" directory.
 
 Notes : 
@@ -131,7 +132,6 @@ Following commands will allow to create Ros agent so that the device can start c
 ```
 ros2 run micro_ros_setup create_agent_ws.sh
 
-ros2 run micro_ros_setup create_agent_ws.sh
 ```
 ### Building the agent:
 ```
