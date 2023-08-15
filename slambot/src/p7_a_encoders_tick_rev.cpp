@@ -6,8 +6,8 @@
 const int PWM_RIGHT = 13;
 const int MOTOR_RIGHT_FWD = 6;
 const int MOTOR_RIGHT_REV = 5;
-const int ENCODER_RIGHT_A = 17;
-const int ENCODER_RIGHT_B = 27;
+const int ENCODER_RIGHT_A = 27;
+const int ENCODER_RIGHT_B = 17;
 
 const int PWM_LEFT = 12;
 const int MOTOR_LEFT_FWD = 16;
@@ -52,35 +52,27 @@ int main() {
     callback(pi, ENCODER_RIGHT_B, EITHER_EDGE, encoder_callback_right);
     callback(pi, ENCODER_LEFT_A, EITHER_EDGE, encoder_callback_left);
     callback(pi, ENCODER_LEFT_B, EITHER_EDGE, encoder_callback_left);
-    // Drive motors forward for 1 second
+
+    // Target number of encoder ticks
+    const int target_ticks = 1100; // Change this value as needed
+
+    // Drive motors forward
     gpio_write(pi, MOTOR_RIGHT_FWD, 0);
     gpio_write(pi, MOTOR_LEFT_FWD, 0);
     set_PWM_dutycycle(pi, PWM_RIGHT, 200);
     set_PWM_dutycycle(pi, PWM_LEFT, 200);
-    sleep(1);
+
+    // Wait until the target number of encoder ticks is reached
+    while (encoder_count_right < target_ticks && encoder_count_left < target_ticks) {
+        usleep(10000); // Sleep for 10 milliseconds
+    }
 
     // Stop motors
     gpio_write(pi, MOTOR_RIGHT_FWD, 1);
     gpio_write(pi, MOTOR_LEFT_FWD, 1);
 
     // Log encoder ticks
-    std::cout << "Encoder ticks after forward movement - Right: " << encoder_count_right << ", Left: " << encoder_count_left << std::endl;
-
-    // Reset encoder counts
-    encoder_count_right = 0;
-    encoder_count_left = 0;
-
-    // Drive motors backward for 1 second
-    gpio_write(pi, MOTOR_RIGHT_REV, 0);
-    gpio_write(pi, MOTOR_LEFT_REV, 0);
-    sleep(1);
-
-    // Stop motors
-    gpio_write(pi, MOTOR_RIGHT_REV, 1);
-    gpio_write(pi, MOTOR_LEFT_REV, 1);
-
-    // Log encoder ticks
-    std::cout << "Encoder ticks after backward movement - Right: " << encoder_count_right << ", Left: " << encoder_count_left << std::endl;
+    std::cout << "Encoder ticks - Right: " << encoder_count_right << ", Left: " << encoder_count_left << std::endl;
 
     // Clean up
     pigpio_stop(pi);

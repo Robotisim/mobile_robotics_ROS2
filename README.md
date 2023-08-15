@@ -8,27 +8,11 @@ This repository will be carrying code for 2D Slam ros2 based Robot in CPP .
 - SSH username : ubuntu
 - SSH Password : ubuntu
 - Changed password to 123456789
-- Install pigpio (v79)
-    ```
-    sudo apt-get install unzip && sudo apt-get update
-    wget https://github.com/joan2937/pigpio/archive/v74.zip
-    unzip v79.zip
-    cd pigpio-79
-    make
-    sudo make install
-    ```
-- Test Library in the script directory
-    ```
-    g++ -o test_ blink_test.cpp -lpigpiod_if2 -lrt
-    ```
-- installing Rpildar Package
-    ```
-    sudo apt-get install ros-humble-rplidar-ros
-    ```
+
 ### Pins
 - MotorRight : 13(PWM),6,5 : ENC:(17,27)
 - LeftRight :  12(PWM),7,1 : ENC (21,20)
-
+- MPU>RPI - SDA>SDA(GPIO2) and SCL>SCL(GPIO3)
 
 ## Requirements
 ### Software

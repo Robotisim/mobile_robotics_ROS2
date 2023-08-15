@@ -24,20 +24,35 @@ add_executable(p7_a_motor_driving src/p7_a_motor_driving.cpp)
 target_link_libraries(p7_a_motor_driving ${PIGPIOD_IF2_LIBRARY} rt)
 ament_target_dependencies(p7_a_motor_driving rclcpp)
 
-add_executable(p7_a_encoders src/p7_a_encoders.cpp)
-target_link_libraries(p7_a_encoders ${PIGPIOD_IF2_LIBRARY} rt)
-ament_target_dependencies(p7_a_encoders rclcpp)
+add_executable(p7_a_encoders_tick_rev src/p7_a_encoders_tick_rev.cpp)
+target_link_libraries(p7_a_encoders_tick_rev ${PIGPIOD_IF2_LIBRARY} rt)
+ament_target_dependencies(p7_a_encoders_tick_rev rclcpp)
+
+add_executable(p7_a_encoders_difference src/p7_a_encoders_difference.cpp)
+target_link_libraries(p7_a_encoders_difference ${PIGPIOD_IF2_LIBRARY} rt)
+ament_target_dependencies(p7_a_encoders_difference rclcpp)
+
+add_executable(p7_a_encoders_direction_manual src/p7_a_encoders_direction_manual.cpp)
+target_link_libraries(p7_a_encoders_direction_manual ${PIGPIOD_IF2_LIBRARY} rt)
+ament_target_dependencies(p7_a_encoders_direction_manual rclcpp)
 
 add_executable(p7_a_imus src/p7_a_imus.cpp)
 target_link_libraries(p7_a_imus ${PIGPIOD_IF2_LIBRARY} rt)
 ament_target_dependencies(p7_a_imus rclcpp)
 
 
-# add_executable(p7_c_cmd_vel src/p7_c_cmd_vel.cpp)
-# ament_target_dependencies(p7_c_cmd_vel rclcpp geometry_msgs)
+
+add_executable(p7_b_cmd_vel_drive src/p7_b_cmd_vel_drive.cpp)
+target_link_libraries(p7_b_cmd_vel_drive ${PIGPIOD_IF2_LIBRARY} rt)
+ament_target_dependencies(p7_b_cmd_vel_drive rclcpp geometry_msgs)
+
+add_executable(p7_b_sensor_publish src/p7_b_sensor_publish.cpp)
+target_link_libraries(p7_b_sensor_publish ${PIGPIOD_IF2_LIBRARY} rt)
+ament_target_dependencies(p7_b_sensor_publish rclcpp geometry_msgs sensor_msgs)
 
 
-install(TARGETS test_gpio p7_a_motor_driving p7_a_encoders p7_a_imus
+install(TARGETS test_gpio p7_a_motor_driving p7_a_encoders_difference p7_a_imus p7_a_encoders_tick_rev  p7_a_encoders_direction_manual
+                p7_b_cmd_vel_drive p7_b_sensor_publish
 
   DESTINATION lib/${PROJECT_NAME})
 
