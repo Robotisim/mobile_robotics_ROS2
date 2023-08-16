@@ -8,7 +8,8 @@ This repository will be carrying code for basics of mobile robotics with ros2 im
 - **drive_turtlebot3** : Turtlebot3 driving with ROS2
     - Namespaces , Launch arguments , topics remapping
     - P2 : run p2_b and p2_c_sqaure.launch to move multi turtles in square
-
+- **esp32_drive** : Esp drive with serial commands
+    - P3: 
 
 
 ## Requirements
@@ -16,6 +17,8 @@ This repository will be carrying code for basics of mobile robotics with ros2 im
 - Ubuntu 22.04
 - ROS2 Humble
 - Vscode
+- ESP IDF
+- Micro ROS setup
 
 ### Hardware
 - Raspberry Pi 3B+
@@ -25,3 +28,4 @@ This repository will be carrying code for basics of mobile robotics with ros2 im
 - 1x Caster Wheel
 - 1x L298N Motor Driver
 - 1x 12V Battery
+- ESP32 
