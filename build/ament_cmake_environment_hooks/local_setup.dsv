@@ -1,0 +1,4 @@
+source;share/my_custom_message/environment/ament_prefix_path.sh
+source;share/my_custom_message/environment/library_path.sh
+source;share/my_custom_message/environment/path.sh
+source;share/my_custom_message/environment/pythonpath.sh

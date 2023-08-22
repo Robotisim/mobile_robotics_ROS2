@@ -17,7 +17,8 @@
                 "/usr/include/**",
                 "${workspaceFolder}/Esp32_MicroROS/.pio/libdeps/esp32doit-devkit-v1/micro_ros_platformio/build/mcu/src/rclc/rclc/include",
                 "${workspaceFolder}/Esp32_MicroROS/.pio/libdeps/esp32doit-devkit-v1/micro_ros_platformio/libmicroros/include",
-                "${workspaceFolder}/Esp32_MicroROS/.pio/libdeps/esp32doit-devkit-v1/AS5600"
+                "${workspaceFolder}/Esp32_MicroROS/.pio/libdeps/esp32doit-devkit-v1/AS5600",
+                "${workspaceFolder}/Esp32_MicroROS/.pio/libdeps/esp32doit-devkit-v1/micro_ros_platformio/build/mcu/src/rclc/time/include"
             ],
             "name": "ROS",
             "intelliSenseMode": "gcc-x64",
