@@ -209,33 +209,54 @@ void setupEncoder1()
   }
 }
 
-int resolution_0()
+
+int cummulativePos0()
 {
   if (!as5600_0.begin())
   {
   }
   else
   {
-    Serial.print("Resolution 1: ");
-    Serial.println(as5600_0.readAngle());
-    int resolution0 = as5600_0.readAngle();
-    return resolution0;
+    static uint32_t lastTime = 0;
+
+    //  set initial position
+    as5600_0.getCumulativePosition();
+
+    //  update every 100 ms
+    //  should be enough up to ~200 RPM
+    if (millis() - lastTime >= 100)
+    {
+      lastTime = millis();
+      Serial.print(as5600_0.getCumulativePosition());
+    }
+    int cummulative0 = as5600_0.getCumulativePosition();
+    return cummulative0;
   }
 }
-int resolution_1()
+
+int cummulativePos1()
 {
   if (!as5600_1.begin())
   {
   }
   else
   {
-    Serial.print("Resolution 2: ");
-    Serial.println(as5600_1.readAngle());
-    int resolution1 = as5600_1.readAngle();
-    return resolution1;
+    static uint32_t lastTime = 0;
+
+    //  set initial position
+    as5600_1.getCumulativePosition();
+
+    //  update every 100 ms
+    //  should be enough up to ~200 RPM
+    if (millis() - lastTime >= 100)
+    {
+      lastTime = millis();
+      Serial.print(as5600_1.getCumulativePosition());
+    }
+    int cummulative1 = as5600_1.getCumulativePosition();
+    return cummulative1;
   }
 }
-
 void setupMPU()
 {
   if (!mpu.begin())
@@ -357,10 +378,10 @@ void setup()
 void loop()
 {
   delay(100);
-  int encoder_value_0 = resolution_0();                        // Read encoder value using your function
+  int encoder_value_0 = cummulativePos0();                        // Read encoder value using your function
   publishEncoderValues(&encoder_publisher_0, encoder_value_0); // Publish encoder 0 value
 
-  int encoder_value_1 = resolution_1();                        // Read the second encoder value using your function
+  int encoder_value_1 = cummulativePos1();                        // Read the second encoder value using your function
   publishEncoderValues(&encoder_publisher_1, encoder_value_1); // Publish encoder 1 value
 
   publishImuValues(&imu_publisher, mpu);
