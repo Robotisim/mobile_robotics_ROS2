@@ -73,24 +73,6 @@ void error_loop()
   }
 }
 
-void timer_callback(rcl_timer_t * timer, int64_t last_call_time)
-{  
-  RCLC_UNUSED(last_call_time);
-  if (timer != NULL) {
-    RCSOFTCHECK(rcl_publish(&publisher, &imu_msg, NULL));
-    sensors_event_t a, g, temp;
-    mpu.getEvent(&a, &g, &temp);
-
-    imu_msg.linear_acceleration.x = a.acceleration.x;
-    imu_msg.linear_acceleration.y = a.acceleration.y;
-    imu_msg.linear_acceleration.z = a.acceleration.z;
-
-    imu_msg.angular_velocity.x = a.gyro.x;
-    imu_msg.angular_velocity.y = a.gyro.y;
-    imu_msg.angular_velocity.z = a.gyro.z;
-
-  }
-}
 
 void twist_callback(const void *msgin)
 {
@@ -256,9 +238,11 @@ int resolution_1()
 
 void setupMPU()
 {
-    if (!mpu.begin()) {
+  if (!mpu.begin())
+  {
     Serial.println("Failed to find MPU6050 chip");
-    while (1) {
+    while (1)
+    {
       delay(10);
     }
   }
@@ -269,6 +253,25 @@ void publishEncoderValues(rcl_publisher_t *encoder_publisher, int encoder_value)
 {
   pub_msg.data = encoder_value;
   rcl_publish(encoder_publisher, &pub_msg, NULL);
+}
+
+void publishImuValues(rcl_publisher_t *imu_publisher, Adafruit_MPU6050 &mpu)
+{
+  sensors_event_t a, g, temp;
+  mpu.getEvent(&a, &g, &temp);
+
+  imu_msg.header.stamp.sec = a.timestamp / 1000;          // Convert microseconds to seconds
+  imu_msg.header.stamp.nanosec = (a.timestamp % 1000) * 1e6; // Convert remaining microseconds to nanoseconds
+
+  imu_msg.linear_acceleration.x = a.acceleration.x;
+  imu_msg.linear_acceleration.y = a.acceleration.y;
+  imu_msg.linear_acceleration.z = a.acceleration.z;
+
+  imu_msg.angular_velocity.x = a.gyro.x;
+  imu_msg.angular_velocity.y = a.gyro.y;
+  imu_msg.angular_velocity.z = a.gyro.z;
+
+  rcl_publish(imu_publisher, &imu_msg, NULL);
 }
 
 void setup()
@@ -300,27 +303,24 @@ void setup()
   // create node
   RCCHECK(rclc_node_init_default(&node, "esp32_node", "", &support));
 
-  // create node
-  RCCHECK(rclc_node_init_default(&node, "imu_publisher_node", "", &support));
-
   // create publisher
-  RCCHECK(rclc_publisher_init_default(
-      &publisher,
-      &node,
-      ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-      "micro_ros_platformio_node_publisher"));
+  // RCCHECK(rclc_publisher_init_default(
+  //     &publisher,
+  //     &node,
+  //     ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
+  //     "micro_ros_platformio_node_publisher"));
 
   // create timer,
-  const unsigned int timer_timeout = 1000;
-  RCCHECK(rclc_timer_init_default(
-    &timer,
-    &support,
-    RCL_MS_TO_NS(timer_timeout),
-    timer_callback));
+  // const unsigned int timer_timeout = 1000;
+  // RCCHECK(rclc_timer_init_default(
+  //     &timer,
+  //     &support,
+  //     RCL_MS_TO_NS(timer_timeout),
+  //     timer_callback));
 
   // // create executor
   RCCHECK(rclc_executor_init(&executor, &support.context, 1, &allocator));
-  RCCHECK(rclc_executor_add_timer(&executor, &timer));
+  // RCCHECK(rclc_executor_add_timer(&executor, &timer));
 
   // msg.data = 0;
   RCCHECK(rclc_subscription_init_default(
@@ -345,14 +345,13 @@ void setup()
       &node,
       ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
       "encoder1_topic"));
-  
+
   // create publisher
   RCCHECK(rclc_publisher_init_default(
-    &imu_publisher,
-    &node,
-    ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, Imu),
-    "imu_info_topic"));
-
+      &imu_publisher,
+      &node,
+      ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, Imu),
+      "imu_info_topic"));
 }
 
 void loop()
@@ -364,6 +363,7 @@ void loop()
   int encoder_value_1 = resolution_1();                        // Read the second encoder value using your function
   publishEncoderValues(&encoder_publisher_1, encoder_value_1); // Publish encoder 1 value
 
+  publishImuValues(&imu_publisher, mpu);
 
   RCSOFTCHECK(rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100)));
 }
