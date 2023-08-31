@@ -3,11 +3,12 @@
 #include <pigpiod_if2.h>
 
 const int PWM_RIGHT = 13;
-const int MOTOR_RIGHT_FWD = 6;
-const int MOTOR_RIGHT_REV = 5;
-const int PWM_LEFT = 12;
-const int MOTOR_LEFT_FWD = 16;
-const int MOTOR_LEFT_REV = 26;
+const int MOTOR_RIGHT_FWD = 5;
+const int MOTOR_RIGHT_REV = 11;
+
+const int PWM_LEFT = 19;
+const int MOTOR_LEFT_FWD = 26;
+const int MOTOR_LEFT_REV = 6;
 
 const double WHEEL_DIAMETER = 0.067; // meters
 const double WHEELBASE = 0.185; // meters

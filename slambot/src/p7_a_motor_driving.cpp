@@ -4,12 +4,12 @@
 
 // Define GPIO pin assignments for right and left motors
 const int PWM_RIGHT = 13;
-const int MOTOR_RIGHT_FWD = 6;
-const int MOTOR_RIGHT_REV = 5;
+const int MOTOR_RIGHT_FWD = 5;
+const int MOTOR_RIGHT_REV = 11;
 
-const int PWM_LEFT = 12;
-const int MOTOR_LEFT_FWD = 16;
-const int MOTOR_LEFT_REV = 26;
+const int PWM_LEFT = 19;
+const int MOTOR_LEFT_FWD = 26;
+const int MOTOR_LEFT_REV = 6;
 
 int pigpio_setup() {
     char *addrStr = NULL;
@@ -47,30 +47,32 @@ int main(int argc, char **argv) {
 
     // Drive both motors forward at speed 200 for 3 seconds
     RCLCPP_INFO(logger, "Driving motors forward");
-    gpio_write(pi, MOTOR_RIGHT_FWD, 0);
-    gpio_write(pi, MOTOR_LEFT_FWD, 0);
+    gpio_write(pi, MOTOR_RIGHT_FWD, 1);
+    gpio_write(pi, MOTOR_LEFT_FWD, 1);
     set_PWM_dutycycle(pi, PWM_RIGHT, 200);
     set_PWM_dutycycle(pi, PWM_LEFT, 200);
     time_sleep(3);
 
     // Stop both motors
     RCLCPP_INFO(logger, "Stopping motors");
-    gpio_write(pi, MOTOR_RIGHT_FWD, 1);
-    gpio_write(pi, MOTOR_LEFT_FWD, 1);
+    set_PWM_dutycycle(pi, PWM_RIGHT, 0);
+    set_PWM_dutycycle(pi, PWM_LEFT, 0);
     time_sleep(1);
 
     // Drive both motors backward at speed 200 for 3 seconds
     RCLCPP_INFO(logger, "Driving motors backward");
-    gpio_write(pi, MOTOR_RIGHT_REV, 0);
-    gpio_write(pi, MOTOR_LEFT_REV, 0);
+    gpio_write(pi, MOTOR_RIGHT_REV, 1);
+    gpio_write(pi, MOTOR_LEFT_REV, 1);
     set_PWM_dutycycle(pi, PWM_RIGHT, 200);
     set_PWM_dutycycle(pi, PWM_LEFT, 200);
     time_sleep(3);
 
     // Stop both motors
     RCLCPP_INFO(logger, "Stopping motors");
-    gpio_write(pi, MOTOR_RIGHT_REV, 1);
-    gpio_write(pi, MOTOR_LEFT_REV, 1);
+    gpio_write(pi, MOTOR_RIGHT_REV, 0);
+    gpio_write(pi, MOTOR_LEFT_REV, 0);
+    set_PWM_dutycycle(pi, PWM_RIGHT, 0);
+    set_PWM_dutycycle(pi, PWM_LEFT, 0);
 
     pigpio_stop(pi);
     rclcpp::shutdown();
