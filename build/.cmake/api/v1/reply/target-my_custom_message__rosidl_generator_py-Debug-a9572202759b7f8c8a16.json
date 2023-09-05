@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "rosidl_generator_py/my_custom_message/my_custom_message_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so"
+			"path" : "rosidl_generator_py/my_custom_message/libmy_custom_message__rosidl_generator_py.so"
 		}
 	],
 	"backtrace" : 5,
@@ -16,10 +16,9 @@
 			"rosidl_generate_interfaces",
 			"install",
 			"target_link_libraries",
-			"ament_target_dependencies",
 			"add_dependencies",
 			"set_target_properties",
-			"set_properties",
+			"set_lib_properties",
 			"add_definitions",
 			"find_package",
 			"target_include_directories"
@@ -30,7 +29,6 @@
 			"/opt/ros/humble/share/ament_cmake_core/cmake/core/ament_execute_extensions.cmake",
 			"/opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake",
 			"CMakeLists.txt",
-			"/opt/ros/humble/share/ament_cmake_target_dependencies/cmake/ament_target_dependencies.cmake",
 			"/opt/ros/humble/share/ament_cmake_ros/cmake/ament_cmake_ros-extras.cmake",
 			"/opt/ros/humble/share/ament_cmake_ros/cmake/ament_cmake_rosConfig.cmake",
 			"/opt/ros/humble/share/rosidl_typesupport_fastrtps_c/cmake/rosidl_typesupport_fastrtps_c_generate_interfaces.cmake"
@@ -65,62 +63,50 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 226,
+				"line" : 166,
 				"parent" : 4
 			},
 			{
 				"command" : 4,
 				"file" : 0,
-				"line" : 282,
+				"line" : 302,
 				"parent" : 4
 			},
 			{
 				"command" : 5,
 				"file" : 0,
-				"line" : 246,
+				"line" : 175,
+				"parent" : 4
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 213,
+				"parent" : 4
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 167,
 				"parent" : 4
 			},
 			{
 				"command" : 6,
 				"file" : 0,
-				"line" : 262,
-				"parent" : 4
-			},
-			{
-				"command" : 5,
-				"file" : 4,
-				"line" : 145,
-				"parent" : 8
-			},
-			{
-				"command" : 6,
-				"file" : 0,
-				"line" : 276,
-				"parent" : 4
-			},
-			{
-				"command" : 5,
-				"file" : 4,
-				"line" : 151,
-				"parent" : 10
-			},
-			{
-				"command" : 7,
-				"file" : 0,
-				"line" : 229,
-				"parent" : 4
-			},
-			{
-				"command" : 9,
-				"file" : 0,
-				"line" : 239,
+				"line" : 169,
 				"parent" : 4
 			},
 			{
 				"command" : 8,
 				"file" : 0,
-				"line" : 146,
-				"parent" : 13
+				"line" : 294,
+				"parent" : 4
+			},
+			{
+				"command" : 7,
+				"file" : 0,
+				"line" : 156,
+				"parent" : 11
 			},
 			{
 				"command" : 1,
@@ -129,52 +115,40 @@
 				"parent" : 2
 			},
 			{
-				"file" : 7,
-				"parent" : 15
-			},
-			{
-				"command" : 11,
-				"file" : 7,
-				"line" : 21,
-				"parent" : 16
-			},
-			{
 				"file" : 6,
-				"parent" : 17
-			},
-			{
-				"command" : 1,
-				"file" : 6,
-				"line" : 41,
-				"parent" : 18
-			},
-			{
-				"file" : 5,
-				"parent" : 19
+				"parent" : 13
 			},
 			{
 				"command" : 10,
+				"file" : 6,
+				"line" : 21,
+				"parent" : 14
+			},
+			{
 				"file" : 5,
+				"parent" : 15
+			},
+			{
+				"command" : 1,
+				"file" : 5,
+				"line" : 41,
+				"parent" : 16
+			},
+			{
+				"file" : 4,
+				"parent" : 17
+			},
+			{
+				"command" : 9,
+				"file" : 4,
 				"line" : 25,
-				"parent" : 20
+				"parent" : 18
 			},
 			{
-				"command" : 12,
+				"command" : 11,
 				"file" : 0,
-				"line" : 253,
+				"line" : 179,
 				"parent" : 4
-			},
-			{
-				"command" : 12,
-				"file" : 4,
-				"line" : 147,
-				"parent" : 10
-			},
-			{
-				"command" : 12,
-				"file" : 4,
-				"line" : 141,
-				"parent" : 8
 			}
 		]
 	},
@@ -187,11 +161,11 @@
 					"fragment" : "-g -fPIC"
 				},
 				{
-					"backtrace" : 14,
+					"backtrace" : 12,
 					"fragment" : "-Wall"
 				},
 				{
-					"backtrace" : 14,
+					"backtrace" : 12,
 					"fragment" : "-Wextra"
 				},
 				{
@@ -201,54 +175,45 @@
 			"defines" : 
 			[
 				{
-					"backtrace" : 7,
+					"backtrace" : 9,
 					"define" : "RCUTILS_ENABLE_FAULT_INJECTION"
 				},
 				{
-					"backtrace" : 21,
+					"backtrace" : 19,
 					"define" : "ROS_PACKAGE_NAME=\"my_custom_message\""
 				},
 				{
-					"define" : "my_custom_message__rosidl_typesupport_c__pyext_EXPORTS"
+					"define" : "my_custom_message__rosidl_generator_py_EXPORTS"
 				}
 			],
 			"includes" : 
 			[
 				{
-					"backtrace" : 22,
+					"backtrace" : 20,
 					"path" : "/home/ibrahim/mobile_robotics_ROS2/build/rosidl_generator_c"
 				},
 				{
-					"backtrace" : 22,
+					"backtrace" : 20,
 					"path" : "/home/ibrahim/mobile_robotics_ROS2/build/rosidl_generator_py"
 				},
 				{
-					"backtrace" : 22,
+					"backtrace" : 20,
 					"path" : "/usr/include/python3.10"
 				},
 				{
-					"backtrace" : 23,
-					"path" : "/opt/ros/humble/include/rmw"
-				},
-				{
-					"backtrace" : 24,
+					"backtrace" : 9,
 					"isSystem" : true,
 					"path" : "/opt/ros/humble/include/rosidl_runtime_c"
 				},
 				{
-					"backtrace" : 24,
-					"isSystem" : true,
-					"path" : "/opt/ros/humble/include/rosidl_typesupport_c"
-				},
-				{
-					"backtrace" : 24,
-					"isSystem" : true,
-					"path" : "/opt/ros/humble/include/rosidl_typesupport_interface"
-				},
-				{
-					"backtrace" : 7,
+					"backtrace" : 9,
 					"isSystem" : true,
 					"path" : "/opt/ros/humble/include/rcutils"
+				},
+				{
+					"backtrace" : 9,
+					"isSystem" : true,
+					"path" : "/opt/ros/humble/include/rosidl_typesupport_interface"
 				}
 			],
 			"language" : "C",
@@ -269,34 +234,30 @@
 	"dependencies" : 
 	[
 		{
-			"backtrace" : 7,
-			"id" : "my_custom_message__rosidl_generator_py::@6890427a1f51a3e7e1df"
-		},
-		{
-			"backtrace" : 12,
-			"id" : "my_custom_message__rosidl_typesupport_c::@6890427a1f51a3e7e1df"
-		},
-		{
-			"backtrace" : 12,
+			"backtrace" : 10,
 			"id" : "my_custom_message__py::@96a9e0459af4f9b79cdf"
 		},
 		{
-			"backtrace" : 7,
+			"backtrace" : 9,
 			"id" : "my_custom_message__rosidl_generator_c::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 10,
+			"id" : "my_custom_message__rosidl_typesupport_c::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "my_custom_message__rosidl_typesupport_c__pyext::@6890427a1f51a3e7e1df",
+	"id" : "my_custom_message__rosidl_generator_py::@6890427a1f51a3e7e1df",
 	"install" : 
 	{
 		"destinations" : 
 		[
 			{
 				"backtrace" : 6,
-				"path" : "local/lib/python3.10/dist-packages/my_custom_message"
+				"path" : "lib"
 			},
 			{
 				"backtrace" : 6,
-				"path" : "local/lib/python3.10/dist-packages/my_custom_message"
+				"path" : "lib"
 			}
 		],
 		"prefix" : 
@@ -313,12 +274,7 @@
 				"role" : "flags"
 			},
 			{
-				"fragment" : "-Wl,-rpath,/home/ibrahim/mobile_robotics_ROS2/build/rosidl_generator_py/my_custom_message:/home/ibrahim/mobile_robotics_ROS2/build:/opt/ros/humble/lib:",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 7,
-				"fragment" : "rosidl_generator_py/my_custom_message/libmy_custom_message__rosidl_generator_py.so",
+				"fragment" : "-Wl,-rpath,/home/ibrahim/mobile_robotics_ROS2/build:/opt/ros/humble/lib:",
 				"role" : "libraries"
 			},
 			{
@@ -327,31 +283,20 @@
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 7,
+				"backtrace" : 8,
 				"fragment" : "libmy_custom_message__rosidl_typesupport_c.so",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 9,
-				"fragment" : "/opt/ros/humble/lib/librosidl_typesupport_c.so",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 11,
-				"fragment" : "/opt/ros/humble/lib/librmw.so",
-				"role" : "libraries"
-			},
-			{
 				"fragment" : "libmy_custom_message__rosidl_generator_c.so",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 9,
 				"fragment" : "/opt/ros/humble/lib/librosidl_runtime_c.so",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 11,
 				"fragment" : "/opt/ros/humble/lib/librcutils.so",
 				"role" : "libraries"
 			},
@@ -366,8 +311,8 @@
 		],
 		"language" : "C"
 	},
-	"name" : "my_custom_message__rosidl_typesupport_c__pyext",
-	"nameOnDisk" : "my_custom_message_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so",
+	"name" : "my_custom_message__rosidl_generator_py",
+	"nameOnDisk" : "libmy_custom_message__rosidl_generator_py.so",
 	"paths" : 
 	{
 		"build" : ".",
@@ -389,7 +334,7 @@
 			"backtrace" : 5,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
-			"path" : "/home/ibrahim/mobile_robotics_ROS2/build/rosidl_generator_py/my_custom_message/_my_custom_message_s.ep.rosidl_typesupport_c.c",
+			"path" : "/home/ibrahim/mobile_robotics_ROS2/build/rosidl_generator_py/my_custom_message/msg/_my_custom_message_s.c",
 			"sourceGroupIndex" : 0
 		}
 	],

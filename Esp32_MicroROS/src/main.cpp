@@ -13,7 +13,7 @@
 #include <std_msgs/msg/int32.h>
 #include <sensor_msgs/msg/imu.h>
 
-#if !defined(MICRO_ROS_TRANSPORT_ARDUINO_SERIAL)
+#if !defined(MICRO_ROS_TRANSPORT_ARDUINO_WIFI)
 #error This example is only avaliable for Arduino framework with serial transport.
 #endif
 
@@ -72,7 +72,6 @@ void error_loop()
     delay(100);
   }
 }
-
 
 void twist_callback(const void *msgin)
 {
@@ -209,7 +208,6 @@ void setupEncoder1()
   }
 }
 
-
 int cummulativePos0()
 {
   if (!as5600_0.begin())
@@ -281,7 +279,7 @@ void publishImuValues(rcl_publisher_t *imu_publisher, Adafruit_MPU6050 &mpu)
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
 
-  imu_msg.header.stamp.sec = a.timestamp / 1000;          // Convert microseconds to seconds
+  imu_msg.header.stamp.sec = a.timestamp / 1000;             // Convert microseconds to seconds
   imu_msg.header.stamp.nanosec = (a.timestamp % 1000) * 1e6; // Convert remaining microseconds to nanoseconds
 
   imu_msg.linear_acceleration.x = a.acceleration.x;
@@ -298,8 +296,13 @@ void publishImuValues(rcl_publisher_t *imu_publisher, Adafruit_MPU6050 &mpu)
 void setup()
 {
   // Configure serial transport
-  Serial.begin(115200);
-  set_microros_serial_transports(Serial);
+  IPAddress agent_ip(192, 168, 100, 12);
+  size_t agent_port = 8888;
+
+  char ssid[] = "Jhelum.net [Luqman House]";
+  char psk[] = "7861234786";
+
+  set_microros_wifi_transports(ssid, psk, agent_ip, agent_port);
   delay(2000);
 
   Wire.begin();
@@ -378,10 +381,10 @@ void setup()
 void loop()
 {
   delay(100);
-  int encoder_value_0 = cummulativePos0();                        // Read encoder value using your function
+  int encoder_value_0 = cummulativePos0();                     // Read encoder value using your function
   publishEncoderValues(&encoder_publisher_0, encoder_value_0); // Publish encoder 0 value
 
-  int encoder_value_1 = cummulativePos1();                        // Read the second encoder value using your function
+  int encoder_value_1 = cummulativePos1();                     // Read the second encoder value using your function
   publishEncoderValues(&encoder_publisher_1, encoder_value_1); // Publish encoder 1 value
 
   publishImuValues(&imu_publisher, mpu);
