@@ -1,20 +1,19 @@
 #include <Arduino.h>
 #include <micro_ros_platformio.h>
 #include <Wire.h>
-#include "AS5600.h"
-#include <Adafruit_MPU6050.h>
-#include <Adafruit_Sensor.h>
+#include <WiFi.h>
+#include "esp_camera.h"
+#include "camera_pins.h"
 
 #include <rcl/rcl.h>
 #include <rclc/rclc.h>
 #include <rcl/time.h>
 #include <rclc/executor.h>
 #include <geometry_msgs/msg/twist.h>
-#include <std_msgs/msg/int32.h>
-#include <sensor_msgs/msg/imu.h>
+#include <sensor_msgs/msg/compressed_image.h> // For image transport
 
-#if !defined(MICRO_ROS_TRANSPORT_ARDUINO_WIFI)
-#error This example is only avaliable for Arduino framework with serial transport.
+#if !defined(MICRO_ROS_TRANSPORT_ARDUINO_SERIAL)
+#error This example is only available for Arduino framework with serial transport.
 #endif
 
 geometry_msgs__msg__Twist msg;
@@ -26,17 +25,14 @@ rcl_allocator_t allocator;
 rcl_node_t node;
 rcl_timer_t timer;
 
+sensor_msgs__msg__CompressedImage pub_msg; // Using CompressedImage for image transport
 rcl_publisher_t publisher;
-std_msgs__msg__Int32 pub_msg;
-rcl_publisher_t encoder_publisher_0;
-rcl_publisher_t encoder_publisher_1;
-rcl_publisher_t imu_publisher;
 
-AS5600 as5600_0(&Wire);
-AS5600 as5600_1(&Wire1);
+// ESP32-CAM configuration
+const char *ssid = "Jhelum.net [Luqman House]";
+const char *password = "7861234786";
 
-sensor_msgs__msg__Imu imu_msg;
-Adafruit_MPU6050 mpu;
+void startCameraServer();
 
 #define PIN_LEFT_FORWARD 14
 #define PIN_LEFT_BACKWARD 27
@@ -76,8 +72,6 @@ void error_loop()
 void twist_callback(const void *msgin)
 {
 
-  pub_msg.data = 1;
-  rcl_publish(&publisher, &pub_msg, NULL);
   const geometry_msgs__msg__Twist *msg = (const geometry_msgs__msg__Twist *)msgin;
   printf("Received: %f\n", msg->linear.x);
   // forward
@@ -178,137 +172,90 @@ void stop()
   analogWrite(PWM_FREQUENCY, 0);
 }
 
-void setupEncoder0()
-{
-  Wire.begin();
-  if (!as5600_0.begin())
-  {
-    Serial.println("Encoder 0 not connected!");
-    Wire.end();
-  }
-  else
-  {
-    as5600_0.setDirection(AS5600_CLOCK_WISE);
-    Serial.println("Connect device 0: true");
-  }
-}
-
-void setupEncoder1()
-{
-  Wire1.begin(4, 5);
-  if (!as5600_1.begin())
-  {
-    Serial.println("Encoder 1 not connected!");
-    Wire1.end();
-  }
-  else
-  {
-    as5600_1.setDirection(AS5600_CLOCK_WISE);
-    Serial.println("Connect device 1: true");
-  }
-}
-
-int cummulativePos0()
-{
-  if (!as5600_0.begin())
-  {
-  }
-  else
-  {
-    static uint32_t lastTime = 0;
-
-    //  set initial position
-    as5600_0.getCumulativePosition();
-
-    //  update every 100 ms
-    //  should be enough up to ~200 RPM
-    if (millis() - lastTime >= 100)
-    {
-      lastTime = millis();
-      Serial.print(as5600_0.getCumulativePosition());
-    }
-    int cummulative0 = as5600_0.getCumulativePosition();
-    return cummulative0;
-  }
-}
-
-int cummulativePos1()
-{
-  if (!as5600_1.begin())
-  {
-  }
-  else
-  {
-    static uint32_t lastTime = 0;
-
-    //  set initial position
-    as5600_1.getCumulativePosition();
-
-    //  update every 100 ms
-    //  should be enough up to ~200 RPM
-    if (millis() - lastTime >= 100)
-    {
-      lastTime = millis();
-      Serial.print(as5600_1.getCumulativePosition());
-    }
-    int cummulative1 = as5600_1.getCumulativePosition();
-    return cummulative1;
-  }
-}
-void setupMPU()
-{
-  if (!mpu.begin())
-  {
-    Serial.println("Failed to find MPU6050 chip");
-    while (1)
-    {
-      delay(10);
-    }
-  }
-  Serial.println("MPU6050 Found!");
-}
-
-void publishEncoderValues(rcl_publisher_t *encoder_publisher, int encoder_value)
-{
-  pub_msg.data = encoder_value;
-  rcl_publish(encoder_publisher, &pub_msg, NULL);
-}
-
-void publishImuValues(rcl_publisher_t *imu_publisher, Adafruit_MPU6050 &mpu)
-{
-  sensors_event_t a, g, temp;
-  mpu.getEvent(&a, &g, &temp);
-
-  imu_msg.header.stamp.sec = a.timestamp / 1000;             // Convert microseconds to seconds
-  imu_msg.header.stamp.nanosec = (a.timestamp % 1000) * 1e6; // Convert remaining microseconds to nanoseconds
-
-  imu_msg.linear_acceleration.x = a.acceleration.x;
-  imu_msg.linear_acceleration.y = a.acceleration.y;
-  imu_msg.linear_acceleration.z = a.acceleration.z;
-
-  imu_msg.angular_velocity.x = a.gyro.x;
-  imu_msg.angular_velocity.y = a.gyro.y;
-  imu_msg.angular_velocity.z = a.gyro.z;
-
-  rcl_publish(imu_publisher, &imu_msg, NULL);
-}
-
 void setup()
 {
-  // Configure serial transport
-  IPAddress agent_ip(192, 168, 100, 12);
-  size_t agent_port = 8888;
+  Serial.begin(115200);
+  set_microros_serial_transports(Serial);
+  Serial.setDebugOutput(true);
+  Serial.println();
 
-  char ssid[] = "Jhelum.net [Luqman House]";
-  char psk[] = "7861234786";
+  // Set up camera configuration (same as your original setup)
+  camera_config_t config;
 
-  set_microros_wifi_transports(ssid, psk, agent_ip, agent_port);
-  delay(2000);
+  config.ledc_channel = LEDC_CHANNEL_0;
+  config.ledc_timer = LEDC_TIMER_0;
+  config.pin_d0 = Y2_GPIO_NUM;
+  config.pin_d1 = Y3_GPIO_NUM;
+  config.pin_d2 = Y4_GPIO_NUM;
+  config.pin_d3 = Y5_GPIO_NUM;
+  config.pin_d4 = Y6_GPIO_NUM;
+  config.pin_d5 = Y7_GPIO_NUM;
+  config.pin_d6 = Y8_GPIO_NUM;
+  config.pin_d7 = Y9_GPIO_NUM;
+  config.pin_xclk = XCLK_GPIO_NUM;
+  config.pin_pclk = PCLK_GPIO_NUM;
+  config.pin_vsync = VSYNC_GPIO_NUM;
+  config.pin_href = HREF_GPIO_NUM;
+  config.pin_sccb_sda = SIOD_GPIO_NUM;
+  config.pin_sccb_scl = SIOC_GPIO_NUM;
+  config.pin_pwdn = PWDN_GPIO_NUM;
+  config.pin_reset = RESET_GPIO_NUM;
+  config.xclk_freq_hz = 20000000;
+  config.frame_size = FRAMESIZE_UXGA;
+  config.pixel_format = PIXFORMAT_JPEG; // for streaming
+  // config.pixel_format = PIXFORMAT_RGB565; // for face detection/recognition
+  config.grab_mode = CAMERA_GRAB_WHEN_EMPTY;
+  config.fb_location = CAMERA_FB_IN_PSRAM;
+  config.jpeg_quality = 12;
+  config.fb_count = 1;
+
+  // if PSRAM IC present, init with UXGA resolution and higher JPEG quality
+  //                      for larger pre-allocated frame buffer.
+  if (config.pixel_format == PIXFORMAT_JPEG)
+  {
+    if (psramFound())
+    {
+      config.jpeg_quality = 10;
+      config.fb_count = 2;
+      config.grab_mode = CAMERA_GRAB_LATEST;
+    }
+    else
+    {
+      // Limit the frame size when PSRAM is not available
+      config.frame_size = FRAMESIZE_SVGA;
+      config.fb_location = CAMERA_FB_IN_DRAM;
+    }
+  }
+  else
+  {
+    // Best option for face detection/recognition
+    config.frame_size = FRAMESIZE_240X240;
+#if CONFIG_IDF_TARGET_ESP32S3
+    config.fb_count = 2;
+#endif
+  }
+
+  // camera init
+  esp_err_t err = esp_camera_init(&config);
+  if (err != ESP_OK)
+  {
+    Serial.printf("Camera init failed with error 0x%x", err);
+    return;
+  }
+
+  // Initialize WiFi and connect to your network
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(1000);
+    Serial.println("Connecting to WiFi...");
+  }
+  Serial.println("Connected to WiFi");
+
+  // Set up ROS 2
+  set_microros_serial_transports(Serial);
 
   Wire.begin();
-  setupEncoder0();
-  setupEncoder1();
-  setupMPU();
 
   pinMode(PIN_LEFT_FORWARD, OUTPUT);
   pinMode(PIN_LEFT_BACKWARD, OUTPUT);
@@ -327,26 +274,9 @@ void setup()
   // create node
   RCCHECK(rclc_node_init_default(&node, "esp32_node", "", &support));
 
-  // create publisher
-  // RCCHECK(rclc_publisher_init_default(
-  //     &publisher,
-  //     &node,
-  //     ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-  //     "micro_ros_platformio_node_publisher"));
-
-  // create timer,
-  // const unsigned int timer_timeout = 1000;
-  // RCCHECK(rclc_timer_init_default(
-  //     &timer,
-  //     &support,
-  //     RCL_MS_TO_NS(timer_timeout),
-  //     timer_callback));
-
-  // // create executor
+  // create executor
   RCCHECK(rclc_executor_init(&executor, &support.context, 1, &allocator));
-  // RCCHECK(rclc_executor_add_timer(&executor, &timer));
 
-  // msg.data = 0;
   RCCHECK(rclc_subscription_init_default(
       &subscriber,
       &node,
@@ -357,37 +287,49 @@ void setup()
       &executor, &subscriber, &msg,
       &twist_callback, ON_NEW_DATA));
 
-  // Create publishers for each encoder
+  // Create a publisher for the video stream
   RCCHECK(rclc_publisher_init_default(
-      &encoder_publisher_0,
+      &publisher,
       &node,
-      ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-      "encoder0_topic"));
+      ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, pub_msg, CompressedImage),
+      "video_stream"));
 
-  RCCHECK(rclc_publisher_init_default(
-      &encoder_publisher_1,
-      &node,
-      ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-      "encoder1_topic"));
-
-  // create publisher
-  RCCHECK(rclc_publisher_init_default(
-      &imu_publisher,
-      &node,
-      ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, Imu),
-      "imu_info_topic"));
+  startCameraServer();
 }
+
+#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/compressed_image.hpp>
+
+// Assuming you have a valid rclcpp::Node defined
+rclcpp::Node::SharedPtr node = rclcpp::Node::make_shared("your_node_name");
+
+// Create a publisher for CompressedImage messages
+auto publisher = node->create_publisher<sensor_msgs::msg::CompressedImage>("your_image_topic", 10);
+
+// Function to publish video frames as CompressedImage messages
+void publishVideoFrame(
+    const uint8_t *frame_data,
+    size_t frame_size,
+    const char *image_encoding) {
+
+  auto pub_msg = std::make_unique<sensor_msgs::msg::CompressedImage>();
+  pub_msg->header.stamp = node->now(); // Get the current time
+  pub_msg->header.frame_id = "camera_frame"; // Replace with your frame ID
+  pub_msg->height = 480; // Replace with your frame height
+  pub_msg->width = 640; // Replace with your frame width
+  pub_msg->format = image_encoding;
+
+  pub_msg->data.assign(frame_data, frame_data + frame_size);
+
+  publisher->publish(std::move(pub_msg));
+}
+
+
 
 void loop()
 {
   delay(100);
-  int encoder_value_0 = cummulativePos0();                     // Read encoder value using your function
-  publishEncoderValues(&encoder_publisher_0, encoder_value_0); // Publish encoder 0 value
-
-  int encoder_value_1 = cummulativePos1();                     // Read the second encoder value using your function
-  publishEncoderValues(&encoder_publisher_1, encoder_value_1); // Publish encoder 1 value
-
-  publishImuValues(&imu_publisher, mpu);
-
+  // Replace the following with your actual frame data, size, encoding, and timestamp
+  // Handle ROS 2 events
   RCSOFTCHECK(rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100)));
 }
