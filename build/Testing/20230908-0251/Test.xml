@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="(empty)"
+	BuildStamp="20230908-0251-Experimental"
+	Name="ibrahim-Lenovo-V130-15IKB"
+	Generator="ctest-3.22.1"
+	CompilerName="/usr/bin/g++"
+	CompilerVersion="11.4.0"
+	OSName="Linux"
+	Hostname="ibrahim-Lenovo-V130-15IKB"
+	OSRelease="6.4.12-060412-generic"
+	OSVersion="#202308231633 SMP PREEMPT_DYNAMIC Wed Aug 23 16:40:34 UTC 2023"
+	OSPlatform="x86_64"
+	Is64Bits="1"
+	VendorString="GenuineIntel"
+	VendorID="Intel Corporation"
+	FamilyID="6"
+	ModelID="142"
+	ProcessorCacheSize="4096"
+	NumberOfLogicalCPU="4"
+	NumberOfPhysicalCPU="2"
+	TotalVirtualMemory="2047"
+	TotalPhysicalMemory="7264"
+	LogicalProcessorsPerPhysical="2"
+	ProcessorClockFrequency="2900"
+	>
+	<Testing>
+		<StartDateTime>Sep 08 07:51 PKT</StartDateTime>
+		<StartTestTime>1694141501</StartTestTime>
+		<TestList/>
+		<EndDateTime>Sep 08 07:51 PKT</EndDateTime>
+		<EndTestTime>1694141501</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>

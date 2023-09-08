@@ -12,9 +12,17 @@
 #include <geometry_msgs/msg/twist.h>
 #include <sensor_msgs/msg/compressed_image.h> // For image transport
 
+#include <rosidl_runtime_c/string.h>
+#include <rosidl_runtime_c/string_functions.h>
+
+
 #if !defined(MICRO_ROS_TRANSPORT_ARDUINO_SERIAL)
 #error This example is only available for Arduino framework with serial transport.
 #endif
+
+// Include C standard library headers
+#include <cstring>
+#include <vector>
 
 geometry_msgs__msg__Twist msg;
 rcl_subscription_t subscriber;
@@ -25,12 +33,17 @@ rcl_allocator_t allocator;
 rcl_node_t node;
 rcl_timer_t timer;
 
+// Initialize the ESP32-CAM configuration
+camera_config_t config;
 sensor_msgs__msg__CompressedImage pub_msg; // Using CompressedImage for image transport
 rcl_publisher_t publisher;
 
 // ESP32-CAM configuration
 const char *ssid = "Jhelum.net [Luqman House]";
 const char *password = "7861234786";
+
+// Buffer for storing the captured image data
+std::vector<uint8_t> captured_image_data;
 
 void startCameraServer();
 
@@ -179,9 +192,6 @@ void setup()
   Serial.setDebugOutput(true);
   Serial.println();
 
-  // Set up camera configuration (same as your original setup)
-  camera_config_t config;
-
   config.ledc_channel = LEDC_CHANNEL_0;
   config.ledc_timer = LEDC_TIMER_0;
   config.pin_d0 = Y2_GPIO_NUM;
@@ -291,45 +301,55 @@ void setup()
   RCCHECK(rclc_publisher_init_default(
       &publisher,
       &node,
-      ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, pub_msg, CompressedImage),
+      ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, CompressedImage),
       "video_stream"));
+
+// Set the frame_id using rosidl_runtime_c__String
+  rosidl_runtime_c__String__init(&pub_msg.header.frame_id);
+  const char *frame_id_cstr = "video_stream";
+  rosidl_runtime_c__String__assignn(&pub_msg.header.frame_id, frame_id_cstr, strlen(frame_id_cstr));
+
 
   startCameraServer();
 }
 
-#include <rclcpp/rclcpp.hpp>
-#include <sensor_msgs/msg/compressed_image.hpp>
-
-// Assuming you have a valid rclcpp::Node defined
-rclcpp::Node::SharedPtr node = rclcpp::Node::make_shared("your_node_name");
-
-// Create a publisher for CompressedImage messages
-auto publisher = node->create_publisher<sensor_msgs::msg::CompressedImage>("your_image_topic", 10);
-
-// Function to publish video frames as CompressedImage messages
+// Function to publish video frame
 void publishVideoFrame(
+    rcl_publisher_t *publisher,
     const uint8_t *frame_data,
     size_t frame_size,
-    const char *image_encoding) {
+    const char *image_encoding)
+{
+    sensor_msgs__msg__CompressedImage pub_msg;
+    sensor_msgs__msg__CompressedImage__init(&pub_msg);
 
-  auto pub_msg = std::make_unique<sensor_msgs::msg::CompressedImage>();
-  pub_msg->header.stamp = node->now(); // Get the current time
-  pub_msg->header.frame_id = "camera_frame"; // Replace with your frame ID
-  pub_msg->height = 480; // Replace with your frame height
-  pub_msg->width = 640; // Replace with your frame width
-  pub_msg->format = image_encoding;
+    // Set the image encoding using rosidl_runtime_c__String
+    rosidl_runtime_c__String__init(&pub_msg.format);
+    rosidl_runtime_c__String__assignn(&pub_msg.format, image_encoding, strlen(image_encoding));
 
-  pub_msg->data.assign(frame_data, frame_data + frame_size);
+    // Set the frame size and data
+    pub_msg.data.size = frame_size;
+    pub_msg.data.capacity = frame_size;
+    pub_msg.data.data = (uint8_t *)frame_data; // Note: Cast away the const for data assignment
 
-  publisher->publish(std::move(pub_msg));
+    rcl_ret_t ret = rcl_publish(publisher, &pub_msg, NULL);
+    if (ret != RCL_RET_OK)
+    {
+        // Handle error
+        // ROS 2 error handling logic here
+    }
+
+    // Cleanup message
+    sensor_msgs__msg__CompressedImage__fini(&pub_msg);
 }
-
-
 
 void loop()
 {
   delay(100);
-  // Replace the following with your actual frame data, size, encoding, and timestamp
+
+  // Publish the compressed image frame
+  publishVideoFrame(&publisher, captured_image_data.data(), captured_image_data.size(), "jpeg");
+
   // Handle ROS 2 events
   RCSOFTCHECK(rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100)));
 }
