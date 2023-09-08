@@ -231,7 +231,7 @@ class DiffTf(Node):
         if now > self.t_next:
             elapsed = now - self.then
             self.then = now
-            elapsed = elapsed.to_sec()
+            elapsed = elapsed.seconds_nanoseconds()[0]
 
             if self.enc_left is None:
                 d_left = 0
@@ -268,8 +268,8 @@ class DiffTf(Node):
             quat = tf2_ros.transformations.quaternion_from_euler(0, 0, self.th)
             tf_msg = TransformStamped()
             tf_msg.header.stamp = now.to_msg()
-            tf_msg.header.frame_id = self.base_frame_id
-            tf_msg.child_frame_id = self.odom_frame_id
+            tf_msg.header.frame_id = self.odom_frame_id
+            tf_msg.child_frame_id = self.base_frame_id
             tf_msg.transform.translation.x = self.x
             tf_msg.transform.translation.y = self.y
             tf_msg.transform.translation.z = 0.0
@@ -282,6 +282,7 @@ class DiffTf(Node):
             odom = Odometry()
             odom.header.stamp = now.to_msg()
             odom.header.frame_id = self.odom_frame_id
+            odom.child_frame_id = self.base_frame_id
             odom.pose.pose.position.x = self.x
             odom.pose.pose.position.y = self.y
             odom.pose.pose.position.z = 0
