@@ -22,6 +22,7 @@ setup(
         'console_scripts': [
             'diff_tf = py_pkg.diff_tf:main',
             'odom_node = py_pkg.odom_node:main',
+            'esp32_cam_viewer = py_pkg.esp32_cam_viewer:main',
         ],
     },
 )
