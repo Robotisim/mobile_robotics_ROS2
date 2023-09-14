@@ -73,12 +73,12 @@ void RosCommunication::cmd_vel_callback(const void *msg_recv){
         drawBackwardArrow(display);
     } else if(angular_vel < 0) {
         Serial.println("right");
-        right(angular_vel *255);
+        right(-angular_vel *255);
         drawRightArrow(display);
     } else if(angular_vel > 0) {
         Serial.println("left");
         drawLeftArrow(display);
-        left(-angular_vel *255);
+        left(angular_vel *255);
     } else {
         Serial.println("Stop");
         stop();
