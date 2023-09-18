@@ -1,4 +1,6 @@
 # Prerequisites
+.pio
+.vscodes
 *.d
 *.pcd
 # Compiled Object files
