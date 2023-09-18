@@ -8,7 +8,7 @@ This repository will be carrying code for basics of mobile robotics with ros2 im
     - P2 : run p2_b and p2_c_sqaure.launch to move multi turtles in square
 
 ## Running Projects
-- Project [#1](https://github.com/Robotisim/mobile_robotics_ROS2/issues/1):  Multi Turtlesim Driving Simulation -> [Wiki_link](https://github.com/Robotisim/mobile_robotics_ROS2/wiki/Project%231-:-Multi-Turtlesim-Driving)
+- Project [#1](https://github.com/Robotisim/mobile_robotics_ROS2/issues/1):  Multi Turtlesim Driving Simulation -> [Wiki_link](https://github.com/Robotisim/mobile_robotics_ROS2/wiki/Project-%231:-Multi-Turtlesim-Driving)
 - Project [#2](https://github.com/Robotisim/mobile_robotics_ROS2/issues/2):  Patrolling TB3s and gazebo worlds -> [Wiki_link](https://github.com/Robotisim/mobile_robotics_ROS2/wiki/Project-%232%3A-Patrolling-TB3s-and-gazebo-worlds)
 - Project [#3](https://github.com/Robotisim/mobile_robotics_ROS2/issues/3):  Mathematics for mobile Robotics -> [Wiki_link](https://github.com/Robotisim/mobile_robotics_ROS2/wiki/Project-%233:-Mathematics-for-mobile-Robotics)
 
