@@ -1,0 +1,4 @@
+[submodule "turtlebot3_simulations"]
+	path = turtlebot3_simulations
+	url = https://github.com/noshluk2/turtlebot3_simulations.git
+	branch = humble-devel
