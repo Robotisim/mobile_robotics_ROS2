@@ -1,4 +1,15 @@
 ### Installations
+- Install ros2 base
+- ROS2 packages
+    ```
+    sudo apt-get install ros-humble-teleop-twist-keyboard
+    ```
+- Lidar Sensor
+    ```
+    sudo apt-get install ros-humble-rplidar-ros
+    sudo apt-get install ros-humble-slam-toolbox
+
+    ```
 - Install pigpio (v79)
     ```
     sudo apt-get install unzip && sudo apt-get update
@@ -37,3 +48,10 @@
     ```
     sudo i2cdetect -y 1
     ```
+
+### Errors
+- RPI lidar [rplidar_composition-1] *** buffer overflow detected ***: terminated
+- Reson is usb cable not data connection -> ls dev/ttyU* -> no output
+ ```
+ sudo chmod 777 /dev/ttyUSB0
+ ```
