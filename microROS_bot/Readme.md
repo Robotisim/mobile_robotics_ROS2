@@ -6,7 +6,7 @@
     ```
 - MicroROS Agent into a workspace and build
     ```
-    https://github.com/micro-ROS/micro_ros_setup
+    git clone -b humble https://github.com/micro-ROS/micro_ros_setup
     ```
 ### Setup
 - Agent package
