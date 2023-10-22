@@ -7,12 +7,24 @@ This repository will be carrying code for 2D Slam ros2 based Robot in CPP .
 - Vscode SSH → find ip using network tools android app
 - SSH username : ubuntu
 - SSH Password : ubuntu
-- Changed password to 123456789
 
-### Pins
-- MotorRight : 13(PWM),6,5 : ENC:(17,27)
-- LeftRight :  12(PWM),7,1 : ENC (21,20)
-- MPU>RPI - SDA>SDA(GPIO2) and SCL>SCL(GPIO3)
+### Running
+- Clone this package on both the RPI and PC
+- To View Odometery on RVIZ
+    ```
+    #on RPI
+    ros2 launch py_slambot rpi_a_robot_drive_enc_pub.launch.py
+
+    #on PC
+    ros2 launch py_slambot pc_a_odom-view.launch.py
+    ```
+- View Lidar
+    ```
+
+    ```
+
+### Remaning
+- Mapping from Lidar
 
 ## Requirements
 ### Software

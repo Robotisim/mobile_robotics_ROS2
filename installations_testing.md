@@ -26,7 +26,16 @@
 - I2C library testing -> [Complete Guide](https://devicetests.com/enabling-i2c-raspberry-pi-ubuntu)
     ```
     sudo apt-get install -y i2c-tools
+    sudo apt update
+    sudo apt install g++
+
     ```
+### ON PC
+```
+sudo apt install ros-humble-navigation2
+sudo apt install ros-humble-nav2-bringup
+```
+
 -----
 ### Testing Libraries - Sensors
 ### Pigpiod Library
