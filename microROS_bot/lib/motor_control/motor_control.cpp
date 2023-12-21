@@ -1,77 +1,94 @@
 #include "motor_control.h"
-int l_pwm , r_pwm,integral_error,base_pwm=120;
-float kp=10,ki=0.5,total_error,proportional_error;
+int count_R = 0; // For Encoders
+int count_L = 0;
+
 
 void motor_setup(){
-  ledcSetup(pwm_channel_mr_a , 5000, 8 ); //2^8 = 256 , 0-255
-  ledcSetup(pwm_channel_mr_b , 5000, 8 ); //2^8 = 256 , 0-255
-  ledcSetup(pwm_channel_ml_a , 5000, 8 ); //2^8 = 256 , 0-255
-  ledcSetup(pwm_channel_ml_b , 5000, 8 ); //2^8 = 256 , 0-255
+    // Motor pinout definition
+  pinMode(motor_left_a, OUTPUT);
+  pinMode(motor_left_b, OUTPUT);
+  pinMode(motor_right_a, OUTPUT);
+  pinMode(motor_right_b, OUTPUT);
+
+  // Encoder pinout definition
+  pinMode(enc_RA, INPUT);
+  pinMode(enc_RB, INPUT);
+  pinMode(enc_LA, INPUT);
+  pinMode(enc_LB, INPUT);
+
+  ledcSetup(pwm_channel_mr , 5000, 8 ); //2^8 = 256 , 0-255
+  ledcSetup(pwm_channel_ml , 5000, 8 ); //2^8 = 256 , 0-255
 
 
-  ledcAttachPin(motor_right_a,pwm_channel_mr_a);
-  ledcAttachPin(motor_right_b,pwm_channel_mr_b);
-  ledcAttachPin(motor_left_a,pwm_channel_ml_a);
-  ledcAttachPin(motor_left_b,pwm_channel_ml_b);
+  ledcAttachPin(motor_right_pwm,pwm_channel_mr);
+  ledcAttachPin(motor_left_pwm,pwm_channel_ml);
+
+  // Interrupts for encoder readings
+  attachInterrupt(digitalPinToInterrupt(enc_RA), Update_encR, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(enc_LA), Update_encL, CHANGE);
+
+
+}
+void Update_encR() {
+  if (digitalRead(enc_RA) == digitalRead(enc_RB)) count_R--;
+  else count_R++;
+}
+
+void Update_encL() {
+  if (digitalRead(enc_LA) == digitalRead(enc_LB)) count_L--;
+  else count_L++;
+}
+
+int get_enc_left(){
+  return count_L;
+}
+int get_enc_right(){
+  return count_R;
 }
 
 void forward(int speed) {
-  ledcWrite(pwm_channel_mr_a, speed);
-  ledcWrite(pwm_channel_ml_a, speed);
-  ledcWrite(pwm_channel_mr_b, 0);
-  ledcWrite(pwm_channel_ml_b, 0);
+  digitalWrite(motor_right_a, HIGH);
+  digitalWrite(motor_right_b, LOW);
+  digitalWrite(motor_left_a, HIGH);
+  digitalWrite(motor_left_b, LOW);
+  ledcWrite(pwm_channel_mr, speed);
+  ledcWrite(pwm_channel_ml, speed);
 }
 
 void reverse(int speed) {
-  ledcWrite(pwm_channel_mr_b, speed);
-  ledcWrite(pwm_channel_ml_b, speed);
-  ledcWrite(pwm_channel_mr_a, 0);
-  ledcWrite(pwm_channel_ml_a, 0);
-}
-
-void stop() {
-  ledcWrite(pwm_channel_mr_a, 0);
-  ledcWrite(pwm_channel_ml_a, 0);
-  ledcWrite(pwm_channel_mr_b, 0);
-  ledcWrite(pwm_channel_ml_b, 0);
+  digitalWrite(motor_right_a, LOW);
+  digitalWrite(motor_right_b, HIGH);
+  digitalWrite(motor_left_a, LOW);
+  digitalWrite(motor_left_b, HIGH);
+  ledcWrite(pwm_channel_mr, speed);
+  ledcWrite(pwm_channel_ml, speed);
 }
 
 void right(int speed) {
-  ledcWrite(pwm_channel_mr_a, 0);
-  ledcWrite(pwm_channel_ml_a, speed);
-  ledcWrite(pwm_channel_mr_b, 0);
-  ledcWrite(pwm_channel_ml_b, 0);
+  digitalWrite(motor_right_a, LOW);
+  digitalWrite(motor_right_b, HIGH);
+  digitalWrite(motor_left_a, HIGH);
+  digitalWrite(motor_left_b, LOW);
+  ledcWrite(pwm_channel_mr, speed);
+  ledcWrite(pwm_channel_ml, speed);
 }
 
 void left(int speed) {
-  ledcWrite(pwm_channel_mr_a, speed);
-  ledcWrite(pwm_channel_ml_a, 0);
-  ledcWrite(pwm_channel_mr_b, 0);
-  ledcWrite(pwm_channel_ml_b, 0);
+  digitalWrite(motor_right_a, HIGH);
+  digitalWrite(motor_right_b, LOW);
+  digitalWrite(motor_left_a, LOW);
+  digitalWrite(motor_left_b, HIGH);
+  ledcWrite(pwm_channel_mr, speed);
+  ledcWrite(pwm_channel_ml, speed);
 }
 
-std::pair<int,int> error_motor_drive(int error){
-  // Dynamic Speed Adjustment
-  int dynamic_base_pwm = base_pwm;
-  if(abs(error) == 0) {  // For faster straight Line Movement
-    dynamic_base_pwm = base_pwm + 120;
-  }
-
-  integral_error = constrain(integral_error + error, -100, 100);
-  integral_error = ki * integral_error;
-  proportional_error = kp * error;
-  total_error = proportional_error + integral_error;
-
-  l_pwm =  dynamic_base_pwm - total_error;
-  r_pwm = dynamic_base_pwm + total_error;
-
-  l_pwm = constrain(l_pwm+5, 70, 255);
-  r_pwm = constrain(r_pwm, 70, 255);
-
-  ledcWrite(pwm_channel_mr_a, r_pwm);
-  ledcWrite(pwm_channel_ml_a, l_pwm);
-  ledcWrite(pwm_channel_mr_b, 0);
-  ledcWrite(pwm_channel_ml_b, 0);
-
-  return std::make_pair(l_pwm, r_pwm);
+void stop() {
+  digitalWrite(motor_right_a, LOW);
+  digitalWrite(motor_right_b, LOW);
+  digitalWrite(motor_left_a, LOW);
+  digitalWrite(motor_left_b, LOW);
+  ledcWrite(pwm_channel_mr, 0);
+  ledcWrite(pwm_channel_ml, 0);
 }
+
+

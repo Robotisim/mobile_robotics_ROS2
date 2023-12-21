@@ -1,0 +1,8 @@
+- Encoders Manual testing
+- ROS2 Cmd drive and encoder publishing
+- Odom Working
+- Install Differential Drive Controll to view odometery on RVIZ while Driving
+- Improve Odometery with IMU (EKF)
+- Lidar using rplidar_a1.launch.py
+    - Transform publish between laser scan and map
+    - select and unselect the map topic( silly )
