@@ -8,6 +8,7 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(tf2 REQUIRED)
@@ -36,9 +37,16 @@ add_executable(p7_a_encoders_direction_manual src/p7_a_encoders_direction_manual
 target_link_libraries(p7_a_encoders_direction_manual ${PIGPIOD_IF2_LIBRARY} rt)
 ament_target_dependencies(p7_a_encoders_direction_manual rclcpp)
 
-add_executable(p7_a_imus src/p7_a_imus.cpp)
-target_link_libraries(p7_a_imus ${PIGPIOD_IF2_LIBRARY} rt)
-ament_target_dependencies(p7_a_imus rclcpp)
+add_executable(p7_a_encoders_manual_interrupt src/p7_a_encoders_manual_interrupt.cpp)
+target_link_libraries(p7_a_encoders_manual_interrupt ${PIGPIOD_IF2_LIBRARY} rt)
+ament_target_dependencies(p7_a_encoders_manual_interrupt rclcpp)
+
+# add_executable(p7_c_odom src/p7_c_odom.cpp)
+# ament_target_dependencies(p7_c_odom rclcpp std_msgs geometry_msgs)
+
+# add_executable(p7_a_imus src/p7_a_imus.cpp)
+# target_link_libraries(p7_a_imus ${PIGPIOD_IF2_LIBRARY} rt)
+# ament_target_dependencies(p7_a_imus rclcpp)
 
 
 
@@ -51,20 +59,23 @@ target_link_libraries(p7_b_sensor_publish ${PIGPIOD_IF2_LIBRARY} rt)
 ament_target_dependencies(p7_b_sensor_publish rclcpp geometry_msgs sensor_msgs)
 
 
-install(TARGETS test_gpio p7_a_motor_driving p7_a_encoders_difference p7_a_imus p7_a_encoders_tick_rev  p7_a_encoders_direction_manual
-                p7_b_cmd_vel_drive p7_b_sensor_publish
+install(TARGETS test_gpio p7_a_motor_driving p7_a_encoders_difference  p7_a_encoders_tick_rev  p7_a_encoders_direction_manual
+                p7_b_cmd_vel_drive p7_b_sensor_publish p7_a_encoders_manual_interrupt
 
   DESTINATION lib/${PROJECT_NAME})
 
 
-# install(PROGRAMS
-#       src/p6_c_commander_api_go_to_pose.py
+install(PROGRAMS
+      # src/p7_b_cmd_vel_drive.py
+      # src/p7_a_enc_read.py
+      src/p7_a_drive_control.py
+      src/p7_c_odom.py
 
-# DESTINATION lib/${PROJECT_NAME})
+DESTINATION lib/${PROJECT_NAME})
 
 
 
-install(DIRECTORY launch
+install(DIRECTORY launch config map
   DESTINATION share/${PROJECT_NAME}/
 )
 

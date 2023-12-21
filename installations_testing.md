@@ -1,4 +1,9 @@
 ### Installations
+- User Dialout
+    ```
+    sudo usermod -a -G dialout $USER
+    sudo reboot
+    ```
 - Install ros2 base
 - ROS2 packages
     ```
@@ -8,6 +13,7 @@
     ```
     sudo apt-get install ros-humble-rplidar-ros
     sudo apt-get install ros-humble-slam-toolbox
+    sudo apt-get install ros-humble-cartographer-ros
 
     ```
 - Install pigpio (v79)
@@ -22,12 +28,23 @@
 - Rpildar Package
     ```
     sudo apt-get install ros-humble-rplidar-ros
+
     ```
 - I2C library testing -> [Complete Guide](https://devicetests.com/enabling-i2c-raspberry-pi-ubuntu)
     ```
     sudo apt-get install -y i2c-tools
     sudo apt update
     sudo apt install g++
+
+    ```
+- Serial Com
+    ```
+    pip3 install pyserial
+    ```
+- Transforms for Odom
+    ```
+    sudo apt install ros-humble-tf-transformations
+    sudo pip3 install transforms3d
 
     ```
 ### ON PC

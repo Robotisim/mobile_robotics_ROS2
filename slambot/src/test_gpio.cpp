@@ -8,7 +8,7 @@ written by Lloyd Brombach and published by Packt Publishing
 #include <pigpiod_if2.h>
 #include <iostream>
 
-const int LED = 5;
+const int LED = 4;
 
 using namespace std;
 

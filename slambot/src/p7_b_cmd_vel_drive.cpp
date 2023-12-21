@@ -30,8 +30,7 @@ public:
 
 private:
     void cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
-    {   RCLCPP_INFO(this->get_logger(), "Received cmd_vel - Linear Velocity: [X: %f, Y: %f, Z: %f],Angular Velocity: [Z: %f]", msg->linear.x, msg->linear.y, msg->linear.z, msg->angular.z);
-
+    {
 
         double linear_velocity = msg->linear.x; // m/s
         double angular_velocity = msg->angular.z; // rad/s
@@ -42,8 +41,10 @@ private:
         // Convert velocities to PWM values (you may need to adjust this)
         int right_pwm = static_cast<int>(right_velocity * 100);
         int left_pwm = static_cast<int>(left_velocity * 100);
-
+        // RCLCPP_INFO(this->get_logger(), "Received cmd_vel - Linear Velocity: [X: %f, Y: %f, Z: %f],Angular Velocity: [Z: %f]", msg->linear.x, msg->linear.y, msg->linear.z, msg->angular.z);
         // Drive motors
+        RCLCPP_INFO(this->get_logger(), "PWM = %d / %d", left_pwm, right_pwm);
+
         drive_motors(right_pwm, left_pwm);
     }
 
